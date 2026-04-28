@@ -63,20 +63,28 @@ Be conservative with discards: when uncertain, preserve. The user can prune late
 
 ### 4. Propose a migration plan
 
-Present a clear plan to the user, organized by destination file. For each destination, list the source content that will be merged in and where it came from. Example shape:
+Present a clear plan to the user, organized by destination file. For each destination, list the source content that will be merged in and where it came from.
+
+**Destination heuristic.** PROJECT.md is the default destination for project-narrative content harvested from CLAUDE.md — its sections (Description, Quickstart commands, Stack summary, Domain glossary, Patterns and idioms, Things to know, Where to find what, Reference links) are designed to absorb most CLAUDE.md content. Architecture diagrams and module layout go to ARCHITECTURE.md. Stack-specific code rules go to `conventions/[stack].md`. When in doubt, prefer PROJECT.md.
+
+Example shape:
 
 ```
 .claude-wyvrn-local/PROJECT.md (new file)
-  ← from CLAUDE.md, lines 12-30: "Project overview" section
-  ← from .claude/context.md: full content
-  ← from CLAUDE.md, lines 45-55: business rules
+  ← from CLAUDE.md, lines 12-20: project overview → Description
+  ← from CLAUDE.md, lines 21-30: build/test/run commands → Quickstart commands
+  ← from CLAUDE.md, lines 31-38: stack list → Stack summary
+  ← from CLAUDE.md, lines 39-44: project glossary → Domain glossary
+  ← from CLAUDE.md, lines 45-55: business rules and idioms → Patterns and idioms
+  ← from CLAUDE.md, lines 56-62: gotchas → Things to know
+  ← from .claude/context.md: full content → split between Description and Things to know
 
 .claude-wyvrn-local/ARCHITECTURE.md (use template, fill from existing)
-  ← from CLAUDE.md, lines 31-44: "Modules" section
-  ← from .claude/architecture.txt: directory layout
+  ← from CLAUDE.md, lines 31-44: "Modules" section → Modules
+  ← from .claude/architecture.txt: directory layout → Modules
 
 .claude-wyvrn-local/conventions/typescript.md (new file)
-  ← from CLAUDE.md, lines 60-72: "TypeScript style" section
+  ← from CLAUDE.md, lines 63-72: "TypeScript style" rules → Naming / Formatting / etc.
 
 Discarded (already covered by the harness):
   ← from CLAUDE.md, lines 1-11: generic "you are an AI" preamble

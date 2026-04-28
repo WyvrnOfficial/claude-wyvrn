@@ -30,7 +30,7 @@ Navigation map. Wyvrn Claude harness. Locate paths, templates, and artifact fold
 
 | Path | Status | Purpose |
 |---|---|---|
-| `PROJECT.md` | read | Optional. Project spec. Overrides `README.md` when present. |
+| `PROJECT.md` | read | Optional. Project spec. Overrides `README.md` when present. Bootstrap via `/bootstrap-project`. |
 | `ARCHITECTURE.md` | read + write | Project architecture. |
 | `conventions/[stack].md` | read | Optional. Project-specific stack conventions. Overrides package stack files on matching stack. |
 | `features/` | read + write | Feature specs. |
@@ -50,6 +50,7 @@ Navigation map. Wyvrn Claude harness. Locate paths, templates, and artifact fold
 | Fix spec | `.claude-wyvrn-local/fixes/` | `templates/fix-spec.md` | `FIX-NNNN-[slug].md` |
 | Refactor spec | `.claude-wyvrn-local/refactors/` | `templates/refactor-spec.md` | `REF-NNNN-[slug].md` |
 | Architecture | `.claude-wyvrn-local/ARCHITECTURE.md` | `templates/architecture.md` | fixed filename |
+| Project spec | `.claude-wyvrn-local/PROJECT.md` | `templates/project.md` | fixed filename |
 | Decision record | `.claude-wyvrn-local/decisions/` | `templates/decision.md` | `DEC-NNNN-[slug].md` |
 | Clarification batch | `.claude-wyvrn-local/clarifications/` | `templates/clarification-batch.md` | `[flow-id]-batch.md` |
 | Verifier report | `.claude-wyvrn-local/reviews/` | `templates/verifier-report.md` | `[flow-id]-review.md` |

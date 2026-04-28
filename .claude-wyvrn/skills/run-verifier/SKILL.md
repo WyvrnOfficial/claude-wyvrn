@@ -24,7 +24,7 @@ Calls the `verifier` agent in a fresh context with the specified flow state. Ret
 
 1. Invoke `verifier` subagent in a fresh context with the inputs.
 2. `verifier` reads spec, clarification batch, produced artifacts, code diff, tests.
-3. `verifier` runs its five checks in sequence: AC verification, template compliance (via `template-verifier`), test suite, code review (via `code-reviewer`), out-of-scope findings collection.
+3. `verifier` runs its six checks in sequence: AC verification, template compliance (via `template-verifier`), test suite, code review (via `code-reviewer`), project alignment (inline reuse + pattern-drift scan), out-of-scope findings collection.
 4. `verifier` writes the verifier report.
 5. `verifier` returns outcome:
     - `Success` — all blocking checks pass.

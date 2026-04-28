@@ -34,6 +34,16 @@ Authoritative rules. Wyvrn Claude harness. Violation of any rule is a flow failu
 3.3 Read task-specific templates and prior artifacts as directed by the active flow.
 3.4 Do not begin work until the full reading sequence is complete.
 
+3.5 Bootstrap suggestion. If both conditions hold during the reading sequence:
+    1. Step 7: `.claude-wyvrn-local/PROJECT.md` is absent.
+    2. Step 8: `.claude-wyvrn-local/ARCHITECTURE.md` is byte-equivalent to `~/.claude-wyvrn/templates/architecture.md` (the unfilled template).
+
+    Then surface this one-line note in the active session before the reading sequence completes:
+
+    > This project has not been bootstrapped. Run `/bootstrap-project` to draft `PROJECT.md` and `ARCHITECTURE.md` from the repo, or fill them by hand.
+
+    Continue the flow with the unfilled state. Do not block. Do not repeat the note within the same flow.
+
 ## 4. Template compliance
 
 4.1 Every artifact written to `.claude-wyvrn-local/` must be generated from a template in `~/.claude-wyvrn/templates/`.

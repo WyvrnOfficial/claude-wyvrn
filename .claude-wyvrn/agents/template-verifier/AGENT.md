@@ -30,7 +30,7 @@ No other reading required. Template and artifact are sufficient.
 
 ### 1. Preprocess template
 
-Strip all lines that are instructional per `CONVENTIONS.md` §3.4 — lines starting with `> [template]`. The remaining lines form the expected structure.
+Strip all lines that are instructional per `CONVENTIONS.md` §4.4 — lines starting with `> [template]`. The remaining lines form the expected structure.
 
 ### 2. Preprocess artifact
 

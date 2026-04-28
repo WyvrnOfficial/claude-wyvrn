@@ -69,7 +69,7 @@ The `verifier` runs the full project test suite. Pre-existing failures unrelated
 
 ## 6. Flow-specific prohibitions
 
-6.1 Do not modify code outside the modules the feature requires. Reuse existing code by calling it; do not change it.
+6.1 Do not modify code outside the modules the feature requires. Reuse existing code by calling it; do not change it. The verifier checks for missed reuse per `WORKFLOW.md` §4.2.
 
 6.2 Do not add scaffolding for "future features" not in the current spec.
 

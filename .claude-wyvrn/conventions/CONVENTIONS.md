@@ -25,6 +25,7 @@ At flow start:
 2. Build a map from file extension to stack file. On the same extension, project file wins over package file.
 3. For each source file touched during the flow, apply the matching stack file in addition to this universal file.
 4. If a touched extension has no matching stack file, apply only this universal file, and add a clarification asking whether a stack file should be created.
+5. The `conventions/gitflow.md` file in either territory is read on demand at the first Git operation of the flow (branch creation, commit, push, PR). Project file overrides package file. If absent in both territories, agents follow whatever Git practice the existing repository displays per §2.1.
 
 ### 1.4 Precedence on conflict
 
@@ -39,11 +40,14 @@ Most specific wins. Project stack rules override package stack rules, which over
 
 ## 2. Code production
 
-### 2.1 Match existing style
+### 2.1 Match existing style and reuse
 
-When modifying or extending an existing codebase, match the style already in use: naming, file structure, import and dependency patterns.
+When modifying or extending an existing codebase, match the style and reuse the components already in use:
 
-Observed style overrides written conventions only when the existing code is internally consistent. Inconsistent codebases fall back to written conventions.
+- Naming, file structure, import and dependency patterns.
+- Existing utilities, helpers, and shared functions — call them rather than re-implementing equivalents.
+
+Observed style and reuse opportunities override written conventions only when the existing code is internally consistent. Inconsistent codebases fall back to written conventions. The verifier enforces reuse via the project-alignment check per `WORKFLOW.md` §4.2.
 
 ### 2.2 No speculative code
 
@@ -89,11 +93,54 @@ General test rules. Stack-specific test rules (framework, file naming, runner in
 - Tests are written before declaring implementation complete.
 - Do not mask, skip, or mark failures as expected without a decision record.
 
-## 3. Artifact authorship
+## 3. Engineering judgment
+
+Rules in this section apply when producing source code. Stack files refine these for a specific language. The universal rules in this section bind regardless of stack.
+
+### 3.1 Simplicity over cleverness
+
+- Prefer the most direct expression of intent. The shortest correct version that uses constructs already present in the codebase wins.
+- Do not introduce abstractions (interfaces, layers, indirection, generics, design patterns) without a current caller that requires them. One caller is not enough — abstractions earn their existence at the second caller.
+- Inline single-use helpers unless the helper makes the call site materially clearer.
+
+### 3.2 Naming
+
+- Names describe the thing, not its type or container. `userIds`, not `userIdList` or `arrUserIds`. `parseHeader`, not `parseHeaderFunc`.
+- Symmetry between paired operations is mandatory: `open`/`close`, `acquire`/`release`, `enable`/`disable`. Do not mix `start` with `stop`-vs-`end` in the same module.
+- A name that requires a comment to be understood is the wrong name. Rename instead of commenting.
+- Boolean names assert state, not action: `isReady`, `hasErrors`, not `checkReady`.
+
+### 3.3 Function and class size
+
+- A function does one thing at one level of abstraction. Mixing levels (orchestration plus arithmetic plus I/O) is a split signal.
+- Limits are guidelines, not gates: a function above ~50 lines or a class above ~300 lines is a candidate for review, not an automatic violation. Cohesion overrides line count.
+- Splitting a function only to satisfy a line count, with no improvement in cohesion or testability, is prohibited.
+
+### 3.4 Error handling
+
+- Errors are values, not control flow tricks. Handle at the layer that has the context to decide, not at the layer that first observes the failure.
+- Do not swallow errors. Catching and discarding (empty `catch`, ignored result types, `// suppress`) is prohibited unless paired with a comment explaining why the failure is non-actionable here.
+- Error messages name the operation that failed, the input that caused it, and the layer reporting it. No "something went wrong".
+- Recoverable conditions and bugs are different. Validation failures and missing resources are recoverable. Invariant violations and unreachable states crash loudly with the smallest possible message.
+
+### 3.5 Security and defensive programming
+
+- Treat every value crossing a process boundary (network, filesystem, IPC, env, CLI args, deserialized blobs) as untrusted. Validate at the boundary, not at the consumer.
+- Never log secrets, tokens, credentials, full request bodies, or PII. When in doubt, redact.
+- Do not concatenate untrusted strings into shell commands, SQL, file paths, or template output. Use the parameterized API the stack provides.
+- Defensive guards belong at trust boundaries and exported APIs. Internal helpers assume their callers passed valid inputs.
+
+### 3.6 Comments
+
+- Comments explain *why* and *what surprises*, not *what*. The code is the *what*.
+- Update or delete comments that no longer match the code. A stale comment is a bug.
+- Doc comments on exported APIs document contract: inputs, outputs, side effects, error conditions. Implementation comments are rare and load-bearing.
+
+## 4. Artifact authorship
 
 Artifacts are markdown files produced in `.claude-wyvrn-local/` — specs, decision records, clarification batches, verifier reports, verifier gaps.
 
-### 3.1 Agent-facing style
+### 4.1 Agent-facing style
 
 Every artifact is agent-facing. Optimize for agent parsing:
 
@@ -106,15 +153,15 @@ Every artifact is agent-facing. Optimize for agent parsing:
 
 The human reads some artifacts at flow boundaries but reads them accepting this style. Do not adjust style to be "friendlier" to the human.
 
-### 3.2 No prose preamble
+### 4.2 No prose preamble
 
 Do not open any artifact with introductory prose about what the document is or why it exists. Template structure carries this. Begin with content under the first section.
 
-### 3.3 Template compliance
+### 4.3 Template compliance
 
 Every artifact must match its template structurally. Rules are in `HARNESS.md` §4. Enforcement is by the `template-verifier` agent. Section presence, order, and naming are fixed by the template.
 
-### 3.4 Template marker convention
+### 4.4 Template marker convention
 
 Templates use `> [template]` blockquote markers to distinguish instructional content from structural content:
 

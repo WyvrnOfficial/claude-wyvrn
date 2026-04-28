@@ -89,13 +89,14 @@ The `verifier`:
 3. Invokes the `template-verifier` agent to verify structural template compliance of every artifact produced.
 4. Runs tests per the flow-specific delta file.
 5. Invokes the `code-reviewer` agent for convention compliance and code quality review.
-6. Produces a verifier report at `.claude-wyvrn-local/reviews/[flow-id]-review.md`.
+6. Performs the project-alignment check inline, scanning ARCHITECTURE-declared modules for missed reuse and pattern drift per `agents/verifier/AGENT.md` Check 5.
+7. Produces a verifier report at `.claude-wyvrn-local/reviews/[flow-id]-review.md`.
 
 ### 4.3 Verifier outcomes
 
 **Success:** all acceptance criteria met, template compliance clean, tests pass, no blocking code-review findings. Report is marked success. Proceed to Validate.
 
-**Findings:** one or more acceptance criteria unmet, template non-compliance, test failure, or blocking code-review findings. Report lists specific findings. Return to Work.
+**Findings:** one or more acceptance criteria unmet, template non-compliance, test failure, blocking code-review findings, or blocking project-alignment findings. Report lists specific findings. Return to Work.
 
 **Out-of-scope findings:** issues noted during verification that are outside task scope per `DECISIONS.md` §4.2. These appear in a separate section of the report. They do not cause a Findings outcome.
 

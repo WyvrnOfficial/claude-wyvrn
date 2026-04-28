@@ -26,8 +26,8 @@ From the root of the project:
 1. Copy `CLAUDE.md` into the project root. 
 2. Copy the `.claude-wyvrn-local/` folder into the project root.
 3. Track both in git.
-4. Open `.claude-wyvrn-local/ARCHITECTURE.md` and fill it in for your project.
-5. Optionally add `PROJECT.md` or stack-specific conventions (see Customization below). This is where you can move your pre-existing CLAUDE.md content. 
+4. Open `.claude-wyvrn-local/ARCHITECTURE.md` and fill it in for your project, or run `/bootstrap-project` to auto-draft `ARCHITECTURE.md` and `PROJECT.md` from the repo and confirm via session.
+5. Optionally add stack-specific conventions (see Customization below). For projects with a pre-existing `CLAUDE.md` or other ad-hoc Claude setup, run `/migrate-foreign-framework` instead — it harvests existing content into `PROJECT.md` and the appropriate harness slots.
 
 ### CI
 
@@ -56,12 +56,14 @@ Most of the time you'll only invoke the flow skills above. Each sub-step is also
 - `/template-check <artifact-path>` — check template compliance for one file.
 - `/decision-log` — manually log a decision record.
 - `/archive` — archive old validated or failed flows.
+- `/bootstrap-project` — draft `PROJECT.md` and `ARCHITECTURE.md` from the repo on a fresh install.
+- `/migrate-foreign-framework` — migrate a project with a hand-written `CLAUDE.md` or ad-hoc `.claude/` setup into the harness layout.
 
 ### Customization
 
 Drop files into project territory to customize behavior without touching the global harness:
 
-- **`.claude-wyvrn-local/PROJECT.md`** — project specification. When present, agents read this instead of the root `README.md` for project context. Useful when your README is installation-focused and you want a separate project spec.
+- **`.claude-wyvrn-local/PROJECT.md`** — project specification. When present, agents read this instead of the root `README.md` for project context. Plays the role a hand-written `CLAUDE.md` plays in non-harness projects: domain context, gotchas, idioms, where things live. Auto-draft via `/bootstrap-project` on a fresh install, or hand-author using `~/.claude-wyvrn/templates/project.md`.
 - **`.claude-wyvrn-local/conventions/[stack].md`** — project-specific stack conventions. Overrides any matching global conventions. Use the template at `~/.claude-wyvrn/templates/conventions.md`.
 - **`.claude-wyvrn-local/ARCHITECTURE.md`** — project architecture. Seeded from the template. Fill in your modules, interfaces, and invariants before first use.
 
