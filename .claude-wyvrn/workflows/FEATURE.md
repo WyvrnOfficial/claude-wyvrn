@@ -22,7 +22,7 @@ Required in the initial prompt:
 - **Task title.** Short identifier for the feature.
 - **Intent.** The user goal, problem being solved, or capability being added.
 
-If either is missing, `clarifier` halts before round 1. Via the active session, request the missing fields. Do not proceed until provided.
+If either is missing, `clarifier` halts before round 1. The flow skill invokes `AskUserQuestion` per `HARNESS.md` §8 to request the missing fields, grouping them into a single call when count ≤ 4. For free-text fields (Task title, Intent), provide a 2-option placeholder list (e.g., suggested phrasings or `<unknown>`); the human's actual answer arrives via the auto-added "Other". Do not proceed until provided.
 
 ### 2.2 Clarify-gated fields
 

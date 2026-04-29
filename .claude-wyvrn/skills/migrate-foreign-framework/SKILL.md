@@ -97,7 +97,7 @@ Archived (originals saved to .claude-wyvrn-local/.archive/migration-{TIMESTAMP}/
 
 Show the plan in full. Do **not** show the entire content of the destination files at this stage — just the structure and what feeds where.
 
-Wait for the user to confirm. Accept refinements ("move X from PROJECT.md to ARCHITECTURE.md", "preserve Y instead of discarding it", etc.) and update the plan accordingly. Re-show after substantial edits.
+Then invoke `AskUserQuestion` per `HARNESS.md` §8 — single question, header `Plan`, options `[Confirm plan, Refine, Abort]`. On `Refine` (the auto-added "Other" carries the refinement text, e.g., "move X from PROJECT.md to ARCHITECTURE.md", "preserve Y instead of discarding it"), update the plan accordingly and re-show after substantial edits. On `Abort`, proceed per §6.
 
 ### 5. Apply the plan
 
@@ -129,7 +129,7 @@ For each written file, ensure it follows the relevant template's structure (load
 
 - **The harness is missing or partially installed.** Halt with a clear message before any file modifications. Tell the user to run `claude-wyvrn install` and retry.
 
-- **The user wants to abort mid-plan.** Accept abort at any stage. Before aborting, confirm: "Abort? Nothing has been written yet." (Or, if writes have started, list what was written so the user can manually revert.)
+- **The user wants to abort mid-plan.** Accept abort at any stage. Before aborting, invoke `AskUserQuestion` per `HARNESS.md` §8 — single question, header `Abort`, options `[Confirm abort, Resume]`. Note in the question text whether nothing has been written yet, or — if writes have started — list what was written so the user can manually revert.
 
 ## Constraints
 

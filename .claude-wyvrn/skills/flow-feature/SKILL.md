@@ -48,11 +48,10 @@ Verify `~/.claude-wyvrn/` exists and contains `VERSION`, `HARNESS.md`, `INDEX.md
 3. `run-clarifier` returns either:
     - `complete` — proceed to Phase 3.
     - `batch: <N> questions` — continue with question handling below.
-4. For each question returned:
-    1. Surface the question to the human via the active session per `HARNESS.md` §8.
-    2. On human answer, write the answer into the clarification batch artifact alongside the question.
-5. When all questions in the round are answered, re-invoke `run-clarifier`.
-6. Repeat until `run-clarifier` returns `complete`.
+4. Surface the questions by invoking `AskUserQuestion` per `HARNESS.md` §8. If the round produced more than 4 questions, chunk into sequential calls of up to 4 questions each, in the order produced by the clarifier. Group naturally-related questions into the same call where possible. For each question that carries an `Options:` field in the batch, pass those options through; for questions without options, supply 2 placeholder options and rely on the auto-added "Other" for free-text answers.
+5. As each `AskUserQuestion` call returns, write all answers from that call into the clarification batch artifact alongside their questions in one update before issuing the next call.
+6. When all questions in the round are answered, re-invoke `run-clarifier`.
+7. Repeat until `run-clarifier` returns `complete`.
 
 ### Phase 3: Work
 
@@ -83,7 +82,7 @@ Verify `~/.claude-wyvrn/` exists and contains `VERSION`, `HARNESS.md`, `INDEX.md
     2. `PROJECT.md` validation field (if declared).
     3. Default: non-blocking.
 2. **Non-blocking:** emit `Flow closed: [flow-id]` in session. End flow.
-3. **Blocking:** prompt human for validation via session per `HARNESS.md` §8. On validation, emit `Flow closed: [flow-id]` and end. On correction request, invoke post-close correction handler (see below).
+3. **Blocking:** prompt the human for validation by invoking `AskUserQuestion` per `HARNESS.md` §8 — single question, header `Validate`, options `[Validate (close flow), Request correction]`. On `Validate (close flow)`, emit `Flow closed: [flow-id]` and end. On `Request correction` (or a free-text correction via the auto-added "Other"), invoke post-close correction handler (see below).
 
 ### Post-close correction
 
@@ -93,7 +92,7 @@ When the human issues a modification request after flow close:
 2. Execute the appropriate case:
     - **Case 1:** re-enter Phase 3 with the correction as finding. Loop to Phase 4.
     - **Case 2:** produce a verifier gap report via the verifier-gap template. Apply Case 1 afterward.
-    - **Case 3:** halt. Prompt human via session for (a) expand scope, or (b) close and start new flow. Proceed per choice.
+    - **Case 3:** halt. Invoke `AskUserQuestion` per `HARNESS.md` §8 — single question, header `Scope`, options `[Expand scope and continue, Close and start new flow]`. Proceed per choice.
 3. Correction loop cap at 3 cycles per `WORKFLOW.md` §6.3.
 
 ## Outputs

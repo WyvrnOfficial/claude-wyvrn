@@ -35,11 +35,11 @@ In each round, the `clarifier`:
 
 ### 2.3 Human prompting
 
-Per `HARNESS.md` §8, human prompts occur through the active session, not via file editing.
+Per `HARNESS.md` §8, human prompts occur by invoking the `AskUserQuestion` tool, not via file editing or raw-text prompts.
 
 1. The flow skill reads the batch entries from the `clarifier`.
-2. The flow skill presents the questions to the human through the active session.
-3. As each answer arrives, the flow skill writes it into the batch artifact alongside its question.
+2. The flow skill presents the questions to the human by invoking `AskUserQuestion` per `HARNESS.md` §8, chunking into calls of up to 4 questions where the round produced more than 4. For each question that carries an `Options:` field in the batch, pass those options through; for questions without options, supply 2 placeholder options and rely on the auto-added "Other" for free-text answers.
+3. As each `AskUserQuestion` call returns, write all answers from that call into the batch artifact alongside their questions in one update before issuing the next call.
 4. When all questions for the round are answered, re-invoke the `clarifier` for the next round.
 
 ### 2.4 Outputs
@@ -132,7 +132,7 @@ Flow closes at the end of Verify on success. The verifier report is the output. 
 
 ### 5.3 Blocking mode
 
-After Verify succeeds, prompt the human for validation via the active session per `HARNESS.md` §8. Flow remains in Validate state until the human responds. On a validation response, flow closes. On a correction request, proceed per §6.
+After Verify succeeds, prompt the human for validation by invoking `AskUserQuestion` per `HARNESS.md` §8 — single question, header `Validate`, options `[Validate (close flow), Request correction]`. Flow remains in Validate state until the human responds. On `Validate (close flow)`, flow closes. On `Request correction` (or a free-text correction via the auto-added "Other"), proceed per §6.
 
 ### 5.4 Flow close
 
@@ -160,15 +160,14 @@ The worker agent classifies the human's modification request into one of three c
 
 **Case 3: Out of scope.** Modification is a new requirement not in the current scope.
 
-1. Halt. Via the active session, emit: "Modification is out of scope for flow [flow-id]. Options: (a) expand scope and continue; (b) close this flow and start a new one."
-2. Wait for human response.
-3. Proceed per human choice:
-    - (a): update the spec artifact with new scope via a clarification round. Log as a scope-expansion decision record. Re-enter Work.
-    - (b): close the current flow. Start a new flow for the new scope.
+1. Halt. Invoke `AskUserQuestion` per `HARNESS.md` §8 — single question (e.g., "Modification is out of scope for flow [flow-id]. How should we proceed?"), header `Scope`, options `[Expand scope and continue, Close and start new flow]`.
+2. Proceed per human choice:
+    - `Expand scope and continue`: update the spec artifact with new scope via a clarification round. Log as a scope-expansion decision record. Re-enter Work.
+    - `Close and start new flow`: close the current flow. Start a new flow for the new scope.
 
 ### 6.2 Classification uncertainty
 
-If the worker cannot clearly classify the request, treat it as UNDECIDED and file a clarification with the three case options for the human to select via the active session.
+If the worker cannot clearly classify the request, treat it as UNDECIDED and file a clarification. The batch entry carries the three case options (`Case 1: simple correction`, `Case 2: verifier gap`, `Case 3: out of scope`) in its `Options:` field per `templates/clarification-batch.md`; the flow skill renders the question via `AskUserQuestion` per §2.3.
 
 ### 6.3 Correction loop cap
 

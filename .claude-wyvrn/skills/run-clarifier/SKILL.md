@@ -31,7 +31,7 @@ Calls the `clarifier` agent in a fresh context with the specified flow state. Re
     - `batch: <N> questions` — questions need human answers.
 4. Return the result to the invoking skill.
 
-The invoking skill handles session prompting for batch questions per `HARNESS.md` §8. `run-clarifier` does not communicate with the human.
+The invoking skill handles session prompting for batch questions by invoking `AskUserQuestion` per `HARNESS.md` §8. `run-clarifier` does not communicate with the human.
 
 ## Outputs
 

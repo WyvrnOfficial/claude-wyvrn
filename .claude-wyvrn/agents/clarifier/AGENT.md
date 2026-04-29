@@ -40,11 +40,12 @@ Invoked by the flow skill at the start of each Clarify round. Inputs:
     - INFERRED → fill and log the decision via the `decision-log` skill.
     - UNDECIDED → leave as `<placeholder>` in the spec; add to the clarification batch.
     - CONTRADICTION → leave as `<placeholder>` in the spec; add to the clarification batch with source references.
-4. After drafting the spec, invoke `template-verifier` on the spec artifact. If findings are returned, correct the spec and re-invoke until clean.
-5. If the clarification batch is non-empty, write or append to the batch artifact. Invoke `template-verifier` on the batch artifact. Correct if needed.
-6. Return to the flow skill with:
+4. When adding a UNDECIDED or CONTRADICTION question to the batch, if it has a small enumerable set of plausible answers (2–4), include them in the batch entry's `Options:` field per the `clarification-batch.md` template. The flow skill uses these to render the question via `AskUserQuestion`. Omit `Options:` for free-text questions; the flow skill supplies placeholder options and relies on the auto-added "Other" for free-text input.
+5. After drafting the spec, invoke `template-verifier` on the spec artifact. If findings are returned, correct the spec and re-invoke until clean.
+6. If the clarification batch is non-empty, write or append to the batch artifact. Invoke `template-verifier` on the batch artifact. Correct if needed.
+7. Return to the flow skill with:
     - `batch: empty` → Clarify is complete. Flow proceeds to Work.
-    - `batch: <N> entries` → Flow skill surfaces questions to human via session.
+    - `batch: <N> entries` → Flow skill surfaces questions to human via `AskUserQuestion` per `HARNESS.md` §8.
 
 ## Outputs
 

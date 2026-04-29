@@ -12,7 +12,7 @@ Typically invoked once after the harness skeleton has been copied into a new pro
 
 ## Description
 
-The harness installer drops an empty `ARCHITECTURE.md` template and no `PROJECT.md`. This skill auto-drafts both files by inspecting the project root — package manifests, top-level directory layout, README, CI configs — and proposes a populated draft of each file. The human reviews via the active session and either accepts or refines. On accept, the skill writes the files and runs `template-check` on each.
+The harness installer drops an empty `ARCHITECTURE.md` template and no `PROJECT.md`. This skill auto-drafts both files by inspecting the project root — package manifests, top-level directory layout, README, CI configs — and proposes a populated draft of each file. The human reviews via `AskUserQuestion` and either accepts or refines. On accept, the skill writes the files and runs `template-check` on each.
 
 This skill is the install-time analog of `migrate-foreign-framework`. The latter handles projects that already have ad-hoc Claude content; this one handles projects that have nothing.
 
@@ -73,7 +73,7 @@ From the inventory, derive:
 | CI presence | Names of CI files found, recorded under `Where to find what` |
 | Reference links | URLs harvested from README's links section if present |
 
-If no manifest is detected and no clear top-level structure exists (e.g. flat repo with mixed-language files), halt before drafting and prompt the human directly via the active session for: project name, primary stack, intended top-level structure. Bootstrap is not a workflow flow; do not invoke `run-clarifier` and do not produce a clarification batch artifact. Capture the answers in working memory and proceed to §5.
+If no manifest is detected and no clear top-level structure exists (e.g. flat repo with mixed-language files), halt before drafting and invoke `AskUserQuestion` per `HARNESS.md` §8 — one call with 3 questions: header `Name` ("What is the project name?"), header `Stack` ("What is the primary stack?"), header `Layout` ("What is the intended top-level structure?"). For each question supply 2 placeholder options (e.g., a guess inferred from repo basename, plus `<unknown>`); the human's actual answer arrives via the auto-added "Other". Bootstrap is not a workflow flow; do not invoke `run-clarifier` and do not produce a clarification batch artifact. Capture the answers in working memory and proceed to §5.
 
 ### 5. Draft both files
 
@@ -87,7 +87,7 @@ Do **not** write either file yet.
 
 ### 6. Present the plan and confirm
 
-Show the human a structured summary in the active session per `HARNESS.md` §8. Format follows `migrate-foreign-framework` Phase 4 — sources to destinations first, full content second.
+Show the human a structured summary in the active session (raw text emit per `HARNESS.md` §8.2.6 — the prompt itself follows). Format follows `migrate-foreign-framework` Phase 4 — sources to destinations first, full content second.
 
 Stage A — sources to destinations:
 
@@ -109,9 +109,9 @@ Stage A — sources to destinations:
   ← invariants: N/A (none inferred)
 ```
 
-Wait for the human to confirm, refine, or abort. Accept refinements ("rename module X", "add invariant Y", "set validation: blocking", "merge tests/ into src/ as a sub-module", etc.). Update working drafts.
+Then invoke `AskUserQuestion` per `HARNESS.md` §8 — single question, header `Plan`, options `[Confirm plan, Refine, Abort]`. On `Refine` (the auto-added "Other" carries the refinement text, e.g., "rename module X", "add invariant Y", "set validation: blocking", "merge tests/ into src/ as a sub-module"), update working drafts and re-render Stage A. On `Abort`, proceed per §8.
 
-Stage B — once the source-to-destination plan is approved, render the **full draft** of each file in the session for one final review. Accept further refinements or proceed.
+Stage B — once the source-to-destination plan is approved, render the **full draft** of each file in the session for one final review. Then invoke `AskUserQuestion` per `HARNESS.md` §8 — single question, header `Final`, options `[Confirm and write, Refine, Abort]`. On `Refine`, accept refinements via the auto-added "Other" and re-render Stage B.
 
 ### 7. Apply
 
@@ -129,7 +129,7 @@ On final confirm:
 - **No manifest, no recognizable structure.** Run one clarification round before drafting (see §4).
 - **Monorepo detected** (workspace manifest, multiple sub-manifests). Treat each top-level workspace member as a module in `ARCHITECTURE.md`. Stack summary lists every workspace stack.
 - **Harness installed but partial.** Halt before any work per §1.
-- **Human aborts mid-plan.** Accept abort. Confirm: "Abort? Nothing has been written yet." (Or, if step 7 already wrote one of the two files, list what was written.)
+- **Human aborts mid-plan.** Accept abort. Invoke `AskUserQuestion` per `HARNESS.md` §8 — single question, header `Abort`, options `[Confirm abort, Resume]`. Note in the question text whether nothing has been written yet, or — if step 7 already wrote one of the two files — list what was written.
 
 ## Constraints
 
@@ -138,7 +138,7 @@ On final confirm:
 - **Never skip the human-confirm step.** The whole point of this skill versus a fully automated bootstrap is that the human reviews before write.
 - **No code production.** This skill produces only the two artifacts. It does not touch source files, configs, or `~/.claude-wyvrn/`.
 - **No stack-convention drafting.** If the human wants project stack-conventions files, that is a separate concern handled by hand-authoring under `.claude-wyvrn-local/conventions/` using `templates/conventions.md`. Bootstrap does not auto-create those.
-- **Respect `HARNESS.md` §8.** All prompts go through the active session. Never instruct the human to edit the file to provide input.
+- **Respect `HARNESS.md` §8.** All prompts go through `AskUserQuestion`. Never instruct the human to edit the file to provide input.
 
 ## Output
 

@@ -23,7 +23,7 @@ Required in the initial prompt:
 - **Target area.** Files, modules, or code regions to be refactored.
 - **Preservation statement.** The behavior, interface, or invariants that must not change.
 
-If any field is missing, `clarifier` halts before round 1. Via the active session, request the missing fields. Do not proceed until provided.
+If any field is missing, `clarifier` halts before round 1. The flow skill invokes `AskUserQuestion` per `HARNESS.md` §8 to request the missing fields, grouping them into a single call when count ≤ 4. For free-text fields (Task title, Target area, Preservation statement), provide a 2-option placeholder list; the human's actual answer arrives via the auto-added "Other". Do not proceed until provided.
 
 ### 2.2 Clarify-gated fields
 

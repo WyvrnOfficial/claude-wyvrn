@@ -23,7 +23,11 @@
 - <source reference>
 
 **Question:**
-<the question, as posed to the human via the session>
+<the question, as posed to the human via `AskUserQuestion` per `HARNESS.md` §8>
+
+**Options:**
+> [template] Optional. When the clarifier can suggest a small set of plausible answers, list 2–4 here as a Markdown bulleted list, each as `Label: description`. The flow skill renders these as `AskUserQuestion` options. Omit this field for free-text-shaped questions. The auto-added "Other" option is never listed here.
+- <Label>: <description>
 
 **Answer:**
 > [template] Human's answer, recorded verbatim from the session. If not yet answered, leave as `<pending>`.
