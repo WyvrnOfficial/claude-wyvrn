@@ -41,7 +41,15 @@ Verify `~/.claude-wyvrn/` exists and contains `VERSION`, `HARNESS.md`, `INDEX.md
 5. Assign flow ID: scan `.claude-wyvrn-local/features/` for highest existing `FEAT-NNNN`, increment by 1. Human may override via the initial prompt.
 6. Generate slug from task title.
 
+### Phase 1.5: Triviality check
+
+1. Run the `triviality-detector` skill per `HARNESS.md` §10.1. The detector is an in-context procedure — do not invoke a subagent. Apply the steps in `skills/triviality-detector/SKILL.md` against the initial prompt, the feature-spec template, `FEATURE.md` §2.1 prompt-gated fields, and `PROJECT.md` settings (if present).
+2. Capture the verdict (`trivial`, `prompt_complete`, or `standard`) and a one-sentence reason.
+3. The verdict gates Phase 2 and Phase 4 invocations as documented below. Record verdict and reason for inclusion in the spec artifact's Implementation notes section.
+
 ### Phase 2: Clarify
+
+If the Phase 1.5 verdict is `standard`:
 
 1. Emit `Clarifying...` in the session.
 2. Invoke `run-clarifier` skill with inputs: flow ID, flow type `feature`, initial prompt, spec artifact path, clarification batch path.
@@ -53,10 +61,23 @@ Verify `~/.claude-wyvrn/` exists and contains `VERSION`, `HARNESS.md`, `INDEX.md
 6. When all questions in the round are answered, re-invoke `run-clarifier`.
 7. Repeat until `run-clarifier` returns `complete`.
 
+If the Phase 1.5 verdict is `prompt_complete` or `trivial`:
+
+1. Emit `Clarifying...` in the session.
+2. Do not invoke `run-clarifier`. Do not invoke any subagent.
+3. Write the spec artifact at `.claude-wyvrn-local/features/FEAT-NNNN-[slug].md` directly from the initial prompt, using the `feature-spec.md` template:
+    - Title and Intent from the prompt.
+    - Acceptance criteria: derive 1-2 testable criteria from the prompt's described change. Each criterion is a pass/fail condition.
+    - Scope boundary from the prompt or `N/A`.
+    - Implementation notes: first line records `Triviality verdict: <verdict>. Reason: <reason>.` Other content `N/A` until Work begins.
+    - Other template fields per defaults.
+4. The template-verifier hook fires on the write per `HARNESS.md` §4.6. Correct and re-write if findings.
+5. No clarification batch artifact is produced on these paths.
+
 ### Phase 3: Work
 
 1. Emit `Working...` in the session.
-2. Read the spec artifact, clarification batch.
+2. Read the spec artifact, and the clarification batch when it exists (standard path only).
 3. Read stack-specific conventions per `CONVENTIONS.md` §1.3 as files are touched.
 4. Implement the feature per the spec's acceptance criteria.
 5. Apply `DECISIONS.md` §1 classification to every decision encountered:
@@ -68,12 +89,30 @@ Verify `~/.claude-wyvrn/` exists and contains `VERSION`, `HARNESS.md`, `INDEX.md
 
 ### Phase 4: Verify
 
+If the Phase 1.5 verdict is `standard` or `prompt_complete`:
+
 1. Emit `Verifying...` in the session.
 2. Invoke `run-verifier` skill with flow ID and cycle number.
 3. `run-verifier` returns outcome:
     - `Success` → proceed to Phase 5.
     - `Findings` → return to Phase 3 with findings as the scope. Increment cycle number.
 4. If cycle number reaches 4, halt per `WORKFLOW.md` §4.4. Emit convergence failure message in session. End flow in Failed status.
+
+If the Phase 1.5 verdict is `trivial`:
+
+1. Emit `Verifying...` in the session.
+2. Do not invoke `run-verifier`. Do not invoke `verifier` or `code-reviewer` subagents. Run the verifier-equivalent self-check inline per `HARNESS.md` §10.4, in the orchestrator's context, applying every check in `agents/verifier/AGENT.md` Behavior:
+    - **AC verification.** For each acceptance criterion in the spec, locate the test or artifact that satisfies it. Confirm.
+    - **Template compliance.** Read `.claude-wyvrn-local/.metrics/template-verifier-findings.log`. Confirm every artifact written this flow has `findings=0` on its latest entry.
+    - **Test execution.** Run the test suite per `FEATURE.md` §5.2. Record results.
+    - **Code review.** Re-read the diff against `CONVENTIONS.md` §2-3 and any stack-specific files matched in Phase 3. Look for blocking convention violations.
+    - **Project alignment.** Per `agents/verifier/AGENT.md` Check 5. Trivial flows excluded new public symbols at the gate, so this check is mostly trivial; confirm.
+    - **Out-of-scope findings.** Collect any issues outside scope per `DECISIONS.md` §4.2.
+3. Write the verifier report at `.claude-wyvrn-local/reviews/FEAT-NNNN-review.md` using the `verifier-report.md` template. The template-verifier hook fires on the write — correct and re-write if findings.
+4. Outcome:
+    - All checks pass with no blocking finding → `Success`. Proceed to Phase 5.
+    - Any blocking finding → `Findings`. Return to Phase 3 with findings as the scope. Increment cycle number.
+5. If cycle number reaches 4, halt per `WORKFLOW.md` §4.4. Emit convergence failure message in session. End flow in Failed status.
 
 ### Phase 5: Validate
 
@@ -98,7 +137,7 @@ When the human issues a modification request after flow close:
 ## Outputs
 
 - Spec artifact at `.claude-wyvrn-local/features/FEAT-NNNN-[slug].md`.
-- Clarification batch at `.claude-wyvrn-local/clarifications/FEAT-NNNN-batch.md`.
+- Clarification batch at `.claude-wyvrn-local/clarifications/FEAT-NNNN-batch.md` (only on `standard` path; not produced for `prompt_complete` or `trivial` verdicts).
 - Decision records at `.claude-wyvrn-local/decisions/` (as needed).
 - Verifier report at `.claude-wyvrn-local/reviews/FEAT-NNNN-review.md`.
 - Any verifier gap reports at `.claude-wyvrn-local/verifier-gaps/GAP-NNNN-[slug].md` (as needed).
@@ -107,10 +146,11 @@ When the human issues a modification request after flow close:
 
 ## Invokes
 
-- `run-clarifier` (utility skill)
-- `run-verifier` (utility skill)
+- `triviality-detector` (utility skill, in-context — no subagent)
+- `run-clarifier` (utility skill, only on `standard` path)
+- `run-verifier` (utility skill, only on `standard` and `prompt_complete` paths)
 - `decision-log` (utility skill)
 - `clarifier` (subagent, via run-clarifier)
 - `verifier` (subagent, via run-verifier)
 - template-verifier hook (`hooks/template_verifier.py`, fires automatically on every artifact write)
-- `code-reviewer` (subagent, via verifier)
+- `code-reviewer` (subagent, via verifier; not invoked on `trivial` path)

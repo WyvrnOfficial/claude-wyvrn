@@ -8,6 +8,8 @@ A flow runs five phases in order: Read, Clarify, Work, Verify, Validate.
 
 Before Phase 1, every flow skill runs a pre-flight check per `HARNESS.md` §2.6 to verify the harness is installed at `~/.claude-wyvrn/`. If the check fails, halt immediately and report to the human via the active session. Do not proceed with any phase.
 
+After Phase 1 and before Phase 2, the flow skill runs the `triviality-detector` skill per `HARNESS.md` §10. The verdict (`trivial`, `prompt_complete`, or `standard`) gates Phase 2 and Phase 4 invocations as specified below. The verdict is computed once per flow and does not change mid-flow except per `HARNESS.md` §10.7.
+
 Emit a one-word progress indicator in the agent response at the start of each phase: `Reading...`, `Clarifying...`, `Working...`, `Verifying...`. No indicator for Validate; the verifier report is the signal that Validate has begun.
 
 ## 1. Read
@@ -17,11 +19,19 @@ Emit a one-word progress indicator in the agent response at the start of each ph
 1.3 Read prior decision records in `.claude-wyvrn-local/decisions/` not marked archived.
 1.4 Do not proceed to Clarify until reading is complete.
 
+## 1.5 Triviality check
+
+1.5.1 After Read completes and before Phase 2, run the `triviality-detector` skill per `HARNESS.md` §10.1. The skill runs in the orchestrator's context; do not invoke a subagent.
+1.5.2 The verdict (`trivial`, `prompt_complete`, or `standard`) gates Phase 2 and Phase 4 invocations.
+1.5.3 Capture the verdict and reason. The flow skill writes both to the spec artifact's Implementation notes section during Phase 2.
+
 ## 2. Clarify
 
 ### 2.1 Invocation
 
-Invoke the `clarifier` agent. Pass the initial human prompt as input.
+If the §1.5 verdict is `standard`, invoke the `clarifier` agent. Pass the initial human prompt as input. Proceed per §2.2 and §2.3.
+
+If the verdict is `prompt_complete` or `trivial`, skip the `clarifier` subagent per `HARNESS.md` §10.3. The orchestrator writes the spec artifact directly from the initial prompt, filling all template fields from prompt content. The triviality verdict and reason are recorded as the first line of the spec's Implementation notes section. The template-verifier hook fires on the write per `HARNESS.md` §4.6 — correct and re-write if findings. Skip §2.2 and §2.3. Proceed to Work.
 
 ### 2.2 Clarifier round
 
@@ -47,7 +57,7 @@ Per `HARNESS.md` §8, human prompts occur by invoking the `AskUserQuestion` tool
 At end of Clarify:
 
 - Spec artifact exists and is complete: no UNDECIDED or CONTRADICTION items remain.
-- Clarification batch artifact exists with all rounds and answers recorded.
+- Clarification batch artifact exists with all rounds and answers recorded — only on the `standard` path. On `prompt_complete` and `trivial` paths the spec is written directly from the prompt and no clarification batch artifact is produced.
 
 ## 3. Work
 
@@ -57,7 +67,7 @@ The worker agent reads:
 
 - All files per `HARNESS.md` §3.1.
 - The spec artifact produced in Clarify.
-- The clarification batch.
+- The clarification batch when present (standard path only; on `prompt_complete` and `trivial` paths there is no clarification batch).
 - Stack-specific conventions per `CONVENTIONS.md` §1.3, on demand.
 
 ### 3.2 Execution
@@ -78,17 +88,19 @@ All artifacts written during work must conform to their templates per `HARNESS.m
 
 ### 4.1 Invocation
 
-Invoke the `verifier` agent after work is complete.
+If the §1.5 verdict is `standard` or `prompt_complete`, invoke the `verifier` agent after work is complete. Verifier responsibilities are listed in §4.2.
+
+If the verdict is `trivial`, do not invoke the `verifier` subagent. The orchestrator runs the verifier-equivalent self-check inline per `HARNESS.md` §10.4, performing the same checks listed in §4.2 in its own context, and writes the verifier report itself. The `code-reviewer` subagent is also not invoked in trivial mode — the orchestrator performs the equivalent review inline. The template-verifier hook still fires on the report write.
 
 ### 4.2 Verifier responsibilities
 
-The `verifier`:
+The `verifier` (or the orchestrator inline in trivial mode):
 
-1. Reads the spec artifact, the clarification batch, produced artifacts, produced code, and produced tests.
+1. Reads the spec artifact, the clarification batch (when present), produced artifacts, produced code, and produced tests.
 2. Verifies every acceptance criterion in the spec is satisfied.
 3. Confirms the template-verifier hook (`hooks/template_verifier.py` per `HARNESS.md` §4.6) ran clean for every artifact produced during the flow, by checking the per-artifact log at `.claude-wyvrn-local/.metrics/template-verifier-findings.log`.
 4. Runs tests per the flow-specific delta file.
-5. Invokes the `code-reviewer` agent for convention compliance and code quality review.
+5. Invokes the `code-reviewer` agent for convention compliance and code quality review. In trivial mode, the orchestrator performs the equivalent review inline against `CONVENTIONS.md` and stack files instead of invoking `code-reviewer`.
 6. Performs the project-alignment check inline, scanning ARCHITECTURE-declared modules for missed reuse and pattern drift per `agents/verifier/AGENT.md` Check 5.
 7. Produces a verifier report at `.claude-wyvrn-local/reviews/[flow-id]-review.md`.
 

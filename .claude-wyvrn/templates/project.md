@@ -47,6 +47,18 @@
 
 **validation:** <blocking | non-blocking>
 
+## Triviality detection
+
+> [template] One value: `enabled` or `disabled`. Default: `enabled`. When enabled, flows that match the triviality criteria collapse to single-agent inline execution per `HARNESS.md` §10. Setting `disabled` forces every flow through the standard clarifier + verifier subagent pipeline.
+
+**triviality:** <enabled | disabled>
+
+## Clarifier mode
+
+> [template] One value: `auto` or `required`. Default: `auto`. With `auto`, the clarifier subagent is skipped when the prompt-completeness check passes per `HARNESS.md` §10. With `required`, the clarifier always runs.
+
+**clarifier:** <auto | required>
+
 ## Where to find what
 
 > [template] Pointer table: topic → path. Tells the agent where to dig deeper. Do not duplicate content here. If none, write "N/A".
