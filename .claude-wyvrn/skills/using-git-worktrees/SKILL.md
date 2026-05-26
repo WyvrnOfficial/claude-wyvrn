@@ -10,8 +10,8 @@ Sets up an isolated git worktree for a task. Keeps the main working tree clean w
 ## Execution principles
 
 - Parallelize independent reads (manifest detection, git status) at Step 1.
-- Never nest worktrees. Detect and warn before proceeding.
-- Do not modify the main working tree while a worktree is active unless the user explicitly asks.
+- Never nest worktrees inside a standard (non-bare) repo. Bare-repo worktrees are peers — no nesting occurs.
+- In bare-repo mode, all worktrees are peers. Do not modify other worktrees' files.
 
 ## Preconditions
 
@@ -31,24 +31,51 @@ Sets up an isolated git worktree for a task. Keeps the main working tree clean w
 
 Run in one parallel batch:
 
-- `git rev-parse --git-common-dir` — if output differs from `git rev-parse --git-dir`, we are already inside a worktree.
-- `git branch --show-current` — current branch name.
-- `git status --short` — check for uncommitted changes.
+- `git rev-parse --is-bare-repository` — true if CWD is a bare repo.
+- `git rev-parse --git-common-dir` — path to the shared git store.
+- `git rev-parse --git-dir` — path to this worktree's git dir.
+- `git branch --show-current` — current branch name (empty in bare root).
+- `git status --short` — uncommitted changes (skip if bare root).
 - Detect package manager: check for `package.json` + lockfile (`pnpm-workspace.yaml` / `pnpm-lock.yaml` → pnpm; `yarn.lock` → yarn; `package-lock.json` → npm), `pyproject.toml`/`requirements.txt` → pip/uv, `Cargo.toml` → cargo, `go.mod` → go, `Gemfile` → bundle, `*.csproj` → dotnet.
 
-If already inside a worktree:
-- Emit warning: `Already inside a git worktree. Nesting worktrees is unsupported.`
-- AskUserQuestion header `Worktree`, options `[Proceed anyway (create nested), Abort]`. Default safe choice is `Abort`.
-- If `Proceed anyway` → continue with warning noted.
+**Classify repo shape from the results:**
 
-If uncommitted changes exist: note them in the summary at Step 3 (do not block — the user may want to carry them to the worktree branch).
+```
+if is-bare-repository == "true":
+    shape = BARE_ROOT        # CWD is the bare repo itself
+    bare_root = CWD
+elif git-common-dir != git-dir:
+    run: git -C <git-common-dir> rev-parse --is-bare-repository
+    if result == "true":
+        shape = WORKTREE_OF_BARE   # peer worktree — valid, no warning
+        bare_root = git-common-dir
+    else:
+        shape = WORKTREE_OF_STANDARD  # nesting — warn
+else:
+    shape = STANDARD_ROOT
+```
+
+**Shape-specific handling:**
+
+- **BARE_ROOT**: note that no working files exist here; worktrees will be created below the bare root.
+- **WORKTREE_OF_BARE**: peer worktree of a bare repo — proceed without any nesting warning.
+- **WORKTREE_OF_STANDARD**: emit warning `Already inside a git worktree. Nesting worktrees is unsupported.`
+  AskUserQuestion header `Worktree`, options `[Proceed anyway (create nested), Abort]`. Default safe choice is `Abort`.
+- **STANDARD_ROOT**: proceed normally.
+
+If uncommitted changes exist (non-bare shapes): note them in the summary at Step 3 (do not block — the user may want to carry them to the worktree branch).
 
 #### Step 2 — Propose branch and path
 
-Propose:
-- **Worktree path**: `../$(basename $(pwd))-worktrees/<branch-slug>/` where `<branch-slug>` is a short slug for the new branch.
-- **Branch name**: follow `gitflow.md` naming if available (e.g., `feature/<INITIALS>_<camelCaseName>`); else propose `worktree/<slug>`.
-- **Base branch**: current branch unless user specifies otherwise.
+**Branch name**: follow `gitflow.md` naming if available (e.g., `feature/<INITIALS>_<camelCaseName>`); else propose `worktree/<slug>`.
+**Base branch**: current branch unless user specifies otherwise (for BARE_ROOT, use `master` or `main`).
+
+**Worktree path** — depends on repo shape:
+
+| Shape | Proposed path |
+|---|---|
+| BARE_ROOT or WORKTREE_OF_BARE | `<bare_root>/<new-branch-path>/` — mirrors the branch name (e.g., bare root `C:\Proj\chroma2.git`, branch `feature/my-thing` → `C:\Proj\chroma2.git\feature\my-thing\`) |
+| STANDARD_ROOT or WORKTREE_OF_STANDARD | `../$(basename $(pwd))-worktrees/<branch-slug>/` |
 
 AskUserQuestion header `Worktree setup`, options:
 - `[Use proposed path and branch, Customize path/branch, Abort]`
@@ -82,7 +109,7 @@ If no package manager detected → skip with note.
 
 #### Step 5 — Baseline test run
 
-Run the project's test suite (minimal/fast subset if the full suite is slow):
+Run the project's test suite (minimal/fast subset if the full suite is slow) **from the newly created worktree** — not from the calling directory. This matters especially for BARE_ROOT, where the bare repo itself has no source files.
 
 - Detect test runner from manifest scripts or config files (e.g., `jest`, `pytest`, `cargo test`, `go test ./...`, `dotnet test`).
 - Run with a short timeout. If no test runner detected → skip with note.
@@ -134,7 +161,8 @@ Emit summary of what was removed.
 
 ## Constraints
 
-- Do NOT modify the main working tree's files or configs.
+- **Standard repos**: do not modify the main working tree's files or configs while a worktree is active.
+- **Bare repos (BARE_ROOT / WORKTREE_OF_BARE)**: all worktrees are peers — no main tree exists. Do not modify other worktrees' files.
 - Do NOT force-delete branches (`-D`) without a second explicit confirmation.
 - Do NOT modify `~/.claude-wyvrn/`.
 - All confirmations via `AskUserQuestion`.
