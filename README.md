@@ -10,7 +10,7 @@ v2.0.0 replaces v1.x's five-phase orchestration (clarifier subagent → reuse-hi
 - **`/wyvrn-refresh-context` skill** — populates and syncs `.claude-wyvrn-local/PROJECT.md`, `ARCHITECTURE.md`, and project-specific conventions from the codebase. Also absorbs lessons from /flow mistakes.
 - **`/migrate-foreign-framework` skill** — migrates projects with hand-written `CLAUDE.md` or other ad-hoc Claude setups into the harness layout.
 - **Conventions** — universal + gitflow + six stacks (JavaScript, TypeScript, Python, C#, C++, React).
-- **Learning logs** — every /flow run writes a free-form markdown summary to `.claude-wyvrn-local/plans/` focused on mistakes Claude made and how the human corrected them. /flow retrieves relevant past logs when starting similar tasks.
+- **Learning logs** — every /flow run writes a free-form markdown summary to `.claude-wyvrn-local/plans/` focused on mistakes Claude made and how the human corrected them, plus an estimate of the time the agent saved versus a human-only implementation. /flow retrieves relevant past logs when starting similar tasks.
 
 ## What v2.0.0 dropped (breaking change from v1.x)
 
