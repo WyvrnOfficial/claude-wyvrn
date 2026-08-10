@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Wyvrn harness v2.4.0.
+Wyvrn harness v2.5.0.
 
 ## Trigger /flow when
 
@@ -22,7 +22,9 @@ Lazy-read on first matching file touch:
 - `~/.claude-wyvrn/conventions/<stack>.md`
 - `.claude-wyvrn-local/conventions/<stack>.md` (overrides global on conflict)
 
-Stack extensions: `.js`→javascript; `.ts`/`.mts`/`.cts`→typescript; `.jsx`/`.tsx`→react+typescript/javascript; `.py`/`.pyi`→python; `.cs`→csharp; `.cpp`/`.cc`/`.cxx`/`.h`/`.hpp`/`.hxx`→cpp.
+Stack extensions: `.js`→javascript; `.ts`/`.mts`/`.cts`→typescript; `.jsx`/`.tsx`→react+typescript/javascript+design; `.py`/`.pyi`→python; `.cs`→csharp; `.cpp`/`.cc`/`.cxx`/`.h`/`.hpp`/`.hxx`→cpp; `.css`/`.scss`/`.html`/`.rs`/`.xaml`/`.qml`/`.qss`→design.
+
+design applies only when the project declares a brand (guard at the top of `conventions/design.md`; brand applied via `/wyvrn-apply-design`).
 
 ## Parallelize
 

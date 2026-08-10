@@ -1,0 +1,24 @@
+/* Generated from wyvrn.tokens.json -- do not edit by hand. */
+/* Tailwind 4 theme. Import after 'tailwindcss'. Fonts must be @font-face'd by the project. */
+@theme {
+  --color-canvas: #000000;
+  --color-surface: #1a1a1a;
+  --color-surface-overlay: #0d0d0d;
+  --color-surface-muted: #262626;
+  --color-accent: #44d62c;
+  --color-accent-dark: #34ab21;
+  --color-accent-light: #7ae26a;
+  --color-accent-glow: #44d62c33;
+  --color-text: #ffffff;
+  --color-text-muted: #a6a6a6;
+  --color-border: #1a1a1a;
+  --color-border-strong: #a6a6a6;
+  --color-danger: #ef4444;
+  --font-display: 'Razer F5', system-ui, sans-serif;
+  --font-body: 'Razer F5', system-ui, sans-serif;
+  --spacing: 4px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --opacity-disabled: 0.4;
+}

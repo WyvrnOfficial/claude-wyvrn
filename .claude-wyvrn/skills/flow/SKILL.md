@@ -33,7 +33,7 @@ Lazy-load stack conventions on first matching file touch (parallel reads):
 - `~/.claude-wyvrn/conventions/<stack>.md`
 - `.claude-wyvrn-local/conventions/<stack>.md` (project wins on conflict)
 
-Extensions: `.js`→javascript; `.ts`/`.mts`/`.cts`→typescript; `.jsx`/`.tsx`→react+typescript/javascript; `.py`/`.pyi`→python; `.cs`→csharp; `.cpp`/`.cc`/`.cxx`/`.h`/`.hpp`/`.hxx`→cpp.
+Extensions: `.js`→javascript; `.ts`/`.mts`/`.cts`→typescript; `.jsx`/`.tsx`→react+typescript/javascript+design; `.py`/`.pyi`→python; `.cs`→csharp; `.cpp`/`.cc`/`.cxx`/`.h`/`.hpp`/`.hxx`→cpp; `.css`/`.scss`/`.html`/`.rs`/`.xaml`/`.qml`/`.qss`→design (design has a guard: it applies only when `.claude-wyvrn-local/conventions/design.md` exists).
 
 ### Past-mistake retrieval (parallel)
 
