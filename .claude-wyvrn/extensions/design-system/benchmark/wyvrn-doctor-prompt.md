@@ -15,7 +15,7 @@ Services to monitor (the registry, hardcoded as a typed constant):
 - Biosensing platform: WebSocket, port 8071
 - Biosensing demos: WebSocket, ports 8072-8076
 - Wyvrn blog backend: HTTP GET, port 3001
-- Vite dev apps (rcrgb / poppin): HTTP GET, ports 5173 and 5174
+- Local Vite dev apps: HTTP GET, ports 5173 and 5174
 
 Probe logic:
 - WebSocket probes connect to ws://localhost:<port>/ and request the "wyvrn.v1" subprotocol. A connection only counts as UP if the server echoes the subprotocol back; when it does, send a GetVersion message and show the reported version if one comes back within 2 seconds.

@@ -5,7 +5,7 @@ description: Stamps the Synapse or Wyvrn brand onto the current project. Copies 
 
 # wyvrn-apply-design
 
-Applies one brand (synapse | wyvrn) to the current project. After this skill runs, `conventions/design.md` (global) becomes active for the project and every `/flow` touching styled files enforces the brand. The goal is a clean project, a la poppin.
+Applies one brand (synapse | wyvrn) to the current project. After this skill runs, `conventions/design.md` (global) becomes active for the project and every `/flow` touching styled files enforces the brand. The goal is a clean Synapse project, head included.
 
 All prompts via `AskUserQuestion`. Parallelize independent reads and writes.
 
@@ -17,7 +17,7 @@ All prompts via `AskUserQuestion`. Parallelize independent reads and writes.
 
 ## Step 1 -- Brand
 
-From the argument (`synapse` or `wyvrn`). If absent or invalid: AskUserQuestion header `Brand`, options `[Synapse, Wyvrn]`, descriptions naming the surface hierarchy each implies (synapse: cards darker than canvas, the poppin system; wyvrn: surfaces lighter than a pure-black canvas, the wyvrn.com system).
+From the argument (`synapse` or `wyvrn`). If absent or invalid: AskUserQuestion header `Brand`, options `[Synapse, Wyvrn]`, descriptions naming the surface hierarchy each implies (synapse: cards darker than canvas; wyvrn: surfaces lighter than a pure-black canvas, the wyvrn.com system).
 
 ## Step 2 -- Stack detection (parallel batch)
 
@@ -47,19 +47,19 @@ A project can match twice (e.g. Tauri = Cargo.toml + a web frontend): copy for e
 The package does NOT ship font binaries; fonts land in each project from their official sources (`recipes/synapse-web.md` documents them).
 
 1. Grep the project for existing brand font assets (`RazerF5*`, `Roboto*`) and `@font-face`/font-loading declarations. Skip whatever is already wired.
-2. For synapse, two official sources, in order of preference:
-   - Copy poppin's TTF set (`dehinted-RazerF5-{Regular,Semibold,Bold}.ttf` under `poppin/src/assets/font/`) when that repo is reachable on disk.
-   - Else download the official woffs from the razer.com head: `https://www.razer.com/assets/fonts/RazerF5.woff` (400) and `https://www.razer.com/assets/fonts/RazerF5SemiBold.woff` (600). Confirm via AskUserQuestion header `Fonts` before fetching.
-3. Destination: the project's font/assets folder (`src/assets/font/` a la poppin, or `public/assets/fonts/` for plain-HTML projects).
+2. For synapse, two official sources:
+   - Download the official woffs from the razer.com head: `https://www.razer.com/assets/fonts/RazerF5.woff` (400) and `https://www.razer.com/assets/fonts/RazerF5SemiBold.woff` (600). Confirm via AskUserQuestion header `Fonts` before fetching.
+   - Or copy a RazerF5 set already present in a sibling Synapse project on disk, when one is reachable.
+3. Destination: the project's font/assets folder (`src/assets/font/`, or `public/assets/fonts/` for plain-HTML projects).
 4. Wire `@font-face` (`font-family: 'RazerF5'`, `font-display: swap`) per the recipes file. Roboto via `@fontsource/roboto` when npm is present.
 5. Never fetch from any URL other than the official ones listed in the recipes file.
 
 ## Step 5 -- Document head (synapse)
 
-Align `index.html` (or the host page) on the poppin head, per the recipes template:
+Align `index.html` (or the host page) on the Synapse head, per the recipes template:
 
 1. `<title>` format: `Razer <tool name> | For Gamers. By Gamers.`
-2. Favicon: download `https://www.razer.com/favicon.png` (razer.com's own 96x96 PNG, the one poppin ships byte for byte) to `/favicon.png`; link it with `type="image/png"`.
+2. Favicon: download `https://www.razer.com/favicon.png` (razer.com's own 96x96 PNG) to `/favicon.png`; link it with `type="image/png"`.
 3. `<meta name="theme-color">` = the canvas token value. Charset utf-8, standard viewport.
 4. Preload links for the local font files.
 
