@@ -34,7 +34,7 @@ Issue independent reads, edits, greps, and bash commands as a single tool-use me
 
 `.claude-wyvrn-local/PROJECT.md` may declare:
 
-- `plan-review: on | off` — default `off`. When `on`, /flow Step 5 pauses for plan approval.
+- `plan-review: on | off` - default `off`. When `on`, /flow Step 5 pauses for plan approval.
 
 ## Artifacts
 

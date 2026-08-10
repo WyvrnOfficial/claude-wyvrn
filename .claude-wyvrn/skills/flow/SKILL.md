@@ -12,14 +12,14 @@ Inline runbook for feature/fix/refactor. No custom subagents. MAY invoke built-i
 - **Parallelize independent operations.** Issue independent reads, edits, greps, and bash commands as a single tool-use message. Sequence only on data dependencies. See `universal.md` §1.7.
 - **Skip steps whose answers are inferable** from prompt, codebase, conventions, or past plans. Do not re-ask.
 - **No cycle caps** on confidence loops (Steps 3↔4, 7↔8). Iterate until 95%+ or the user interrupts.
-- **POSIX syntax in Bash.** Never use PowerShell here-string syntax (`@'...'@`, `@"..."@`) in the Bash tool — it leaks stray `@` characters. Multi-line strings and commit messages use POSIX constructs (heredoc, or multiple `-m` flags).
-- **ASCII-only code and commit messages.** Source code you write, code blocks inside generated markdown, and every commit message must be strictly 7-bit ASCII — no em-dashes, smart quotes, or other non-ASCII characters. Markdown prose may use them.
+- **POSIX syntax in Bash.** Never use PowerShell here-string syntax (`@'...'@`, `@"..."@`) in the Bash tool - it leaks stray `@` characters. Multi-line strings and commit messages use POSIX constructs (heredoc, or multiple `-m` flags).
+- **ASCII-only code and commit messages.** Source code you write, code blocks inside generated markdown, and every commit message must be strictly 7-bit ASCII - no em-dashes, smart quotes, or other non-ASCII characters. Markdown prose may use other non-ASCII characters but NEVER the em-dash (`universal.md` §1.8).
 
 ## Preconditions
 
 If `~/.claude-wyvrn/VERSION` missing → halt and emit: `Wyvrn harness not installed. Run claude-wyvrn install.`
 
-## Step 1 — Read context (parallel batch)
+## Step 1 - Read context (parallel batch)
 
 Read in one parallel batch:
 
@@ -41,14 +41,14 @@ If `.claude-wyvrn-local/plans/` exists:
 
 1. Extract match keys from the prompt: likely-touched file paths, stack names, salient noun/verb keywords (≥3 chars, drop stop-words).
 2. Issue greps for each key against `plans/` in parallel.
-3. Read the top 3–5 plans by total match count in one parallel batch.
+3. Read the top 3-5 plans by total match count in one parallel batch.
 4. Note any `Mistakes & corrections` entries relevant to this task.
 
 Skip silently if no relevant plans.
 
 Enter plan mode. No code yet.
 
-## Step 2 — Gitflow opt-in
+## Step 2 - Gitflow opt-in
 
 AskUserQuestion: header `Gitflow`, options `[Follow gitflow, Skip gitflow]`.
 
@@ -67,20 +67,20 @@ AskUserQuestion: header `Gitflow`, options `[Follow gitflow, Skip gitflow]`.
 2. Set `gitflow=false`.
 3. Step 10 is a no-op.
 
-## Step 3 — Fill prompt gaps (batched AskUserQuestion)
+## Step 3 - Fill prompt gaps (batched AskUserQuestion)
 
 Ask only what is unclear and not inferable from prompt, codebase, conventions, or past plans:
 
-- **Goal** — observable change after the task.
-- **Scope** — files/modules in; explicit out-of-scope.
-- **Acceptance signal** — test name, manual check, metric.
-- **Constraints** — APIs, perf, back-compat to preserve.
+- **Goal** - observable change after the task.
+- **Scope** - files/modules in; explicit out-of-scope.
+- **Acceptance signal** - test name, manual check, metric.
+- **Constraints** - APIs, perf, back-compat to preserve.
 
 Batch into one AskUserQuestion call (≤4 questions; chunk sequentially when >4). Each question: 2 plausible options; "Other" auto-added.
 
 Skip Step 3 entirely if the prompt nails every item.
 
-## Step 4 — Confidence gate
+## Step 4 - Confidence gate
 
 Judge confidence on:
 
@@ -91,7 +91,7 @@ Judge confidence on:
 
 If 95%+ → Step 5. Else → Step 3 with remaining gaps.
 
-## Step 5 — Plan review (opt-in)
+## Step 5 - Plan review (opt-in)
 
 Check `plan-review:` in `.claude-wyvrn-local/PROJECT.md`. Default `off`.
 
@@ -103,14 +103,14 @@ If `on`:
 
 If `off`: continue.
 
-## Step 6 — Implement
+## Step 6 - Implement
 
 1. Exit plan mode.
 2. **Strict-convention rule** (`universal.md` §1.1). Follow matching stack conventions exactly. Do not propagate codebase deviations. Do not fix unrelated convention violations outside scope.
 3. Before declaring any new public symbol, grep the touched module for similar names. Prefer reuse.
 4. Apply edits to independent files in parallel.
 
-## Step 7 — Tests
+## Step 7 - Tests
 
 **Required** for changes to executable code.
 **Not required** for documentation files, configuration without logic, comment edits, README updates.
@@ -121,7 +121,7 @@ When required:
 2. Run affected tests (e.g., `jest --findRelatedTests`, `pytest --picked`, `dotnet test --filter`, `ctest -R <pattern>`). Independent test commands run in parallel.
 3. Fix any previously-passing test that now fails before Step 8.
 
-## Step 8 — Self-verify
+## Step 8 - Self-verify
 
 Re-read the diff. Check:
 
@@ -132,39 +132,39 @@ Re-read the diff. Check:
 
 If 95%+ → Step 9. Else → fix gaps; re-run affected tests in parallel.
 
-## Step 9 — Learning log + lesson absorption
+## Step 9 - Learning log + lesson absorption
 
 ### 9a. Learning log
 
 Write `.claude-wyvrn-local/plans/YYYY-MM-DD-<slug>.md`. Create `plans/` if missing.
 
-Free-form, ~30–80 lines. Required sections:
+Free-form, ~30-80 lines. Required sections:
 
-- **Task** — one-paragraph paraphrase of the user's request.
-- **Branch** — branch name and base, or `current branch (gitflow skipped)`.
-- **Mistakes & corrections** — every mistake during the flow + how it was corrected. If none, write `None.` Each entry: what went wrong, the correction, what to do differently.
-- **Global harness issues** — mistakes whose root cause is ambiguity or error in `~/.claude-wyvrn/`. For each: file, what's unclear, suggested fix. Do NOT modify `~/.claude-wyvrn/`. Surface these prominently in chat.
-- **Files changed** — list with one-line rationale each.
-- **Tests** — names of new/updated tests + runner outcome.
-- **Project-file updates** — summary of 9b updates, or `None`.
-- **Time saved (agent vs. human-only)** — estimate the developer time this flow saved versus a human implementing the same task unaided. Four sub-points:
-  - **Human-only baseline** — wall-clock a competent developer would need alone (scoping, implementation, tests, debugging, self-review).
-  - **Agent-assisted actual** — wall-clock this flow actually took, end to end.
-  - **Time saved** — baseline minus actual, as `Xh Ym (Z%)`.
-  - **Basis** — one line grounding the estimate: task complexity, files/lines touched, research and debugging effort, and the largest source of uncertainty.
+- **Task** - one-paragraph paraphrase of the user's request.
+- **Branch** - branch name and base, or `current branch (gitflow skipped)`.
+- **Mistakes & corrections** - every mistake during the flow + how it was corrected. If none, write `None.` Each entry: what went wrong, the correction, what to do differently.
+- **Global harness issues** - mistakes whose root cause is ambiguity or error in `~/.claude-wyvrn/`. For each: file, what's unclear, suggested fix. Do NOT modify `~/.claude-wyvrn/`. Surface these prominently in chat.
+- **Files changed** - list with one-line rationale each.
+- **Tests** - names of new/updated tests + runner outcome.
+- **Project-file updates** - summary of 9b updates, or `None`.
+- **Time saved (agent vs. human-only)** - estimate the developer time this flow saved versus a human implementing the same task unaided. Four sub-points:
+  - **Human-only baseline** - wall-clock a competent developer would need alone (scoping, implementation, tests, debugging, self-review).
+  - **Agent-assisted actual** - wall-clock this flow actually took, end to end.
+  - **Time saved** - baseline minus actual, as `Xh Ym (Z%)`.
+  - **Basis** - one line grounding the estimate: task complexity, files/lines touched, research and debugging effort, and the largest source of uncertainty.
 
 ### 9b. Project-file sync + lesson absorption
 
 Two trigger types:
 
-**Type A — material project change:**
+**Type A - material project change:**
 
 - New/removed/changed module → ARCHITECTURE.md.
 - New stack / new framework / dependency change → PROJECT.md, optionally new `conventions/<stack>.md`.
 - New project-specific coding pattern → `conventions/<stack>.md`.
 - Gotcha / idiom / constraint → PROJECT.md.
 
-**Type B — mistake absorption:**
+**Type B - mistake absorption:**
 
 For each mistake in 9a, judge whether a project-file update prevents recurrence:
 
@@ -176,7 +176,7 @@ For each mistake in 9a, judge whether a project-file update prevents recurrence:
 If any update applies → invoke `/wyvrn-refresh-context` with scope and proposed changes.
 Else → record `None` and skip.
 
-## Step 10 — Push (gated)
+## Step 10 - Push (gated)
 
 **Only if `gitflow=true`.** Otherwise no-op.
 

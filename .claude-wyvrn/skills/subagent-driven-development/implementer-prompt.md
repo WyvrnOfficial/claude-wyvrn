@@ -6,7 +6,7 @@ placeholder; hand the brief and report over as file paths, never inline text.
 ```
 Subagent (general-purpose):
   description: "Implement Task N: [task name]"
-  model: [MODEL — REQUIRED: choose per SKILL.md "Model selection"; an omitted
+  model: [MODEL - REQUIRED: choose per SKILL.md "Model selection"; an omitted
          model silently inherits the session's most expensive one]
   prompt: |
     You are implementing Task N: [task name]
@@ -14,7 +14,7 @@ Subagent (general-purpose):
     ## Task Description
 
     Read your task brief first: [BRIEF_FILE]
-    It contains the full task text from the plan — the exact values, signatures,
+    It contains the full task text from the plan - the exact values, signatures,
     and test cases to use verbatim. It is your single source of requirements.
 
     ## Context
@@ -50,14 +50,14 @@ Subagent (general-purpose):
     2. Follow TDD (/test-driven-development): write the failing test, run it to
        confirm it fails for the right reason (RED), write the minimal code to
        make it pass, run it to confirm it passes (GREEN). The brief carries the
-       complete code — transcribe it rather than re-derive, adapting only where
+       complete code - transcribe it rather than re-derive, adapting only where
        the actual codebase differs from the brief's assumptions and recording
-       every deviation in your report — but run the red-green cycle live.
+       every deviation in your report - but run the red-green cycle live.
     3. Verify implementation works
     4. Commit your work [only if the brief's steps say to]. Use a single `-m`
        message. Do NOT append a `Co-Authored-By` trailer, a "Generated with"
        footer, or any other trailer. In the Bash tool, never use PowerShell
-       here-string syntax (`@'...'@`, `@"..."@`) — it leaks stray `@`
+       here-string syntax (`@'...'@`, `@"..."@`) - it leaks stray `@`
        characters; multi-line strings use POSIX constructs (heredoc, or
        multiple `-m` flags).
     5. Self-review (see below)
@@ -79,7 +79,7 @@ Subagent (general-purpose):
     - Follow the file structure defined in the plan
     - Each file should have one clear responsibility with a well-defined interface
     - If a file you're creating is growing beyond the plan's intent, stop and
-      report it as DONE_WITH_CONCERNS — don't split files on your own without
+      report it as DONE_WITH_CONCERNS - don't split files on your own without
       plan guidance
     - If an existing file you're modifying is already large or tangled, work
       carefully and note it as a concern in your report
@@ -125,7 +125,7 @@ Subagent (general-purpose):
 
     **Testing:**
     - Do tests actually verify behavior (not just mock behavior)?
-    - Did I follow TDD — red before green — and record any deviation from the
+    - Did I follow TDD - red before green - and record any deviation from the
       brief's code?
     - Are tests comprehensive?
     - Is the test output pristine (no stray warnings or noise)?
@@ -136,7 +136,7 @@ Subagent (general-purpose):
 
     If a reviewer finds issues and you fix them, re-run the tests that cover the
     amended code and append the results to your report file. Reviewers will not
-    re-run tests for you — your report is the test evidence.
+    re-run tests for you - your report is the test evidence.
 
     ## Report Format
 
@@ -152,7 +152,7 @@ Subagent (general-purpose):
     - Self-review findings (if any)
     - Any issues or concerns
 
-    Then report back with ONLY (under 15 lines — the detail lives in the report
+    Then report back with ONLY (under 15 lines - the detail lives in the report
     file):
     - **Status:** DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT
     - Commits created (short SHA + subject)
@@ -160,7 +160,7 @@ Subagent (general-purpose):
     - Your concerns, if any
     - The report file path
 
-    If BLOCKED or NEEDS_CONTEXT, put the specifics in the final message itself —
+    If BLOCKED or NEEDS_CONTEXT, put the specifics in the final message itself -
     the controller acts on it directly.
 
     Use DONE_WITH_CONCERNS if you completed the work but have doubts about
@@ -170,7 +170,7 @@ Subagent (general-purpose):
 ```
 
 **Placeholders:**
-- `[MODEL]` — REQUIRED: implementer model per SKILL.md "Model selection"
-- `[BRIEF_FILE]` — REQUIRED: the task brief file (`task-brief PLAN N` prints the path)
-- `[REPORT_FILE]` — REQUIRED: where the implementer writes its detailed report (`…/task-N-report.md`)
-- `[directory]` — the working tree
+- `[MODEL]` - REQUIRED: implementer model per SKILL.md "Model selection"
+- `[BRIEF_FILE]` - REQUIRED: the task brief file (`task-brief PLAN N` prints the path)
+- `[REPORT_FILE]` - REQUIRED: where the implementer writes its detailed report (`…/task-N-report.md`)
+- `[directory]` - the working tree

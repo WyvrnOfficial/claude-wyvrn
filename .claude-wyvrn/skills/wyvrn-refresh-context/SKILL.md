@@ -1,22 +1,22 @@
 ---
 name: wyvrn-refresh-context
-description: Populates and syncs Claude's project-context files in `.claude-wyvrn-local/` — PROJECT.md, ARCHITECTURE.md, and project-specific stack conventions — from the current codebase. Use on a fresh project, after codebase drift, or to absorb a lesson from /flow.
+description: Populates and syncs Claude's project-context files in `.claude-wyvrn-local/` - PROJECT.md, ARCHITECTURE.md, and project-specific stack conventions - from the current codebase. Use on a fresh project, after codebase drift, or to absorb a lesson from /flow.
 ---
 
 # wyvrn-refresh-context
 
 Three jobs in one skill:
 
-1. **Initial population** — draft `.claude-wyvrn-local/PROJECT.md` and `ARCHITECTURE.md` for a fresh project from manifests, README, and top-level layout.
-2. **Incremental sync** — refresh existing files against current codebase reality.
-3. **Lesson absorption** — apply a specific change proposed by `/flow` Step 9b.
+1. **Initial population** - draft `.claude-wyvrn-local/PROJECT.md` and `ARCHITECTURE.md` for a fresh project from manifests, README, and top-level layout.
+2. **Incremental sync** - refresh existing files against current codebase reality.
+3. **Lesson absorption** - apply a specific change proposed by `/flow` Step 9b.
 
 Operates from `cwd`. All prompts via `AskUserQuestion`.
 
 ## Execution principles
 
 - Parallelize independent reads, edits, and writes.
-- All confirmations via `AskUserQuestion` — never ask the user to edit files to provide input.
+- All confirmations via `AskUserQuestion` - never ask the user to edit files to provide input.
 
 ## Preconditions
 
@@ -25,16 +25,16 @@ Operates from `cwd`. All prompts via `AskUserQuestion`.
 
 ## Invocation modes
 
-### Mode A — manual
+### Mode A - manual
 
 User runs `/wyvrn-refresh-context`. Skill discovers what to do.
 
-### Mode B — invoked by /flow Step 9b
+### Mode B - invoked by /flow Step 9b
 
 Caller provides:
 
-- **Scope** — one or more of: `PROJECT.md`, `ARCHITECTURE.md`, `conventions/<stack>.md`.
-- **Proposed changes** — specific edits (e.g., "Add module `notifications` to ARCHITECTURE.md").
+- **Scope** - one or more of: `PROJECT.md`, `ARCHITECTURE.md`, `conventions/<stack>.md`.
+- **Proposed changes** - specific edits (e.g., "Add module `notifications` to ARCHITECTURE.md").
 
 In Mode B, skip discovery; jump to step 4.
 
@@ -44,7 +44,7 @@ In Mode B, skip discovery; jump to step 4.
 
 Read in one parallel batch:
 
-- `.claude-wyvrn-local/PROJECT.md`, `ARCHITECTURE.md`, `conventions/*.md` — current state.
+- `.claude-wyvrn-local/PROJECT.md`, `ARCHITECTURE.md`, `conventions/*.md` - current state.
 - Project-root signals required by scope:
   - **Manifests**: `package.json`, `pnpm-workspace.yaml`, `pyproject.toml`, `setup.py`, `setup.cfg`, `Pipfile`, `requirements.txt`, `Cargo.toml`, `go.mod`, `pom.xml`, `build.gradle*`, `composer.json`, `Gemfile`, `mix.exs`, `*.csproj`, `*.sln`, `CMakeLists.txt`, `Makefile`.
   - **READMEs**: `README.md`, `README.rst`, `README.txt`.
@@ -66,8 +66,8 @@ Do not modify anything yet.
 
 Build drafts in working memory:
 
-- **PROJECT.md** — name, description, quickstart commands, stack summary, where-to-find-what, reference links. Uninferable sections (domain glossary, idioms, gotchas) get `<unknown — fill in by hand>` placeholders.
-- **ARCHITECTURE.md** — system overview, one subsection per inferred module (path, status, responsibility), external dependencies from manifest, invariants `N/A` if none inferred.
+- **PROJECT.md** - name, description, quickstart commands, stack summary, where-to-find-what, reference links. Uninferable sections (domain glossary, idioms, gotchas) get `<unknown - fill in by hand>` placeholders.
+- **ARCHITECTURE.md** - system overview, one subsection per inferred module (path, status, responsibility), external dependencies from manifest, invariants `N/A` if none inferred.
 - Stack-conventions files are NOT auto-drafted; created only when a Mode B proposal targets them.
 
 #### Incremental sync
@@ -124,7 +124,7 @@ Refresh complete.
 
 Wrote:
   - .claude-wyvrn-local/ARCHITECTURE.md (added module `notifications`)
-  - .claude-wyvrn-local/conventions/typescript.md (new — pattern: wrap API calls in try/catch with project logger)
+  - .claude-wyvrn-local/conventions/typescript.md (new - pattern: wrap API calls in try/catch with project logger)
 
 Unchanged:
   - .claude-wyvrn-local/PROJECT.md

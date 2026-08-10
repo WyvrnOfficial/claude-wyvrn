@@ -50,7 +50,7 @@ Do not rename variables, functions, classes, files, or paths unless the rename i
 ### 1.6 Test production
 
 - Any change to executable code (build-time or runtime) ships with a test exercising the change.
-- Documentation files, configuration without logic, and README updates do not require tests — use judgment.
+- Documentation files, configuration without logic, and README updates do not require tests - use judgment.
 - A bug fix ships with at least one test that would have caught the bug.
 - A refactor preserves existing test behavior. Do not delete or weaken tests without explicit user confirmation.
 - Tests are written before declaring implementation complete.
@@ -68,6 +68,10 @@ Parallelize:
 - Multiple `Bash` commands when neither depends on the other's output.
 - Multiple `Agent` (Explore) spawns when investigating different areas.
 
+### 1.8 No em-dashes, anywhere
+
+The em-dash character (U+2014) is banned in every produced output: code, comments, commit messages, markdown prose, specs, plans, learning logs, and chat responses. Use a spaced hyphen (` - `), a colon, a comma, or parentheses instead. This is stricter than the ASCII-only rule for code: it binds prose too. Applies equally to the en-dash (U+2013) when used as punctuation; numeric ranges keep a plain hyphen (`3-7 min`).
+
 ## 2. Engineering judgment
 
 Stack files refine these per language. These bind regardless of stack.
@@ -75,7 +79,7 @@ Stack files refine these per language. These bind regardless of stack.
 ### 2.1 Simplicity over cleverness
 
 - Prefer the most direct expression of intent. The shortest correct version using constructs already in the codebase wins.
-- Do not introduce abstractions (interfaces, layers, indirection, generics, design patterns) without a current caller that requires them. One caller is not enough — abstractions earn their existence at the second caller.
+- Do not introduce abstractions (interfaces, layers, indirection, generics, design patterns) without a current caller that requires them. One caller is not enough - abstractions earn their existence at the second caller.
 - Inline single-use helpers unless the helper makes the call site materially clearer.
 
 ### 2.2 Naming

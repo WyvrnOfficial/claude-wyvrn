@@ -5,7 +5,7 @@
 #
 # The workspace lives under .claude-wyvrn-local/ (which the harness already
 # tracks) rather than under .git/, because Claude Code treats .git/ as a
-# protected path and denies agent writes there — which would block an implementer
+# protected path and denies agent writes there - which would block an implementer
 # subagent from writing its report file. A self-ignoring .gitignore keeps the
 # ephemeral artifacts out of `git status` and out of accidental commits without
 # modifying any tracked file.
