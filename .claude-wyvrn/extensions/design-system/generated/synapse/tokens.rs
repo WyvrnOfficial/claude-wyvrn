@@ -1,4 +1,4 @@
-// Generated from razer.tokens.json -- do not edit by hand.
+// Generated from synapse.tokens.json -- do not edit by hand.
 // RGBA tuples map directly onto egui::Color32::from_rgba_unmultiplied and friends.
 #![allow(dead_code)]
 
@@ -6,10 +6,9 @@ pub const COLOR_CANVAS: (u8, u8, u8, u8) = (40, 40, 40, 255);
 pub const COLOR_SURFACE: (u8, u8, u8, u8) = (20, 20, 20, 255);
 pub const COLOR_SURFACE_RAISED: (u8, u8, u8, u8) = (27, 27, 27, 255);
 pub const COLOR_SURFACE_ACTIVE: (u8, u8, u8, u8) = (45, 45, 45, 255);
-pub const COLOR_ACCENT: (u8, u8, u8, u8) = (68, 214, 44, 255);
-pub const COLOR_TEXT: (u8, u8, u8, u8) = (255, 255, 255, 255);
-pub const COLOR_TEXT_SOFT: (u8, u8, u8, u8) = (204, 204, 204, 255);
-pub const COLOR_TEXT_MUTED: (u8, u8, u8, u8) = (153, 153, 153, 255);
+pub const COLOR_RAZER_GREEN: (u8, u8, u8, u8) = (68, 214, 44, 255);
+pub const COLOR_OFF_WHITE: (u8, u8, u8, u8) = (204, 204, 204, 255);
+pub const COLOR_GREY: (u8, u8, u8, u8) = (153, 153, 153, 255);
 pub const COLOR_INK: (u8, u8, u8, u8) = (10, 10, 10, 255);
 pub const COLOR_INK_SOFT: (u8, u8, u8, u8) = (34, 34, 34, 255);
 pub const COLOR_WARNING: (u8, u8, u8, u8) = (255, 170, 0, 255);
@@ -25,4 +24,3 @@ pub const RADIUS_TABS_PX: f32 = 25.0;
 pub const TRACKING_EYEBROW_EM: f32 = 0.2;
 pub const TEXT_2XS_FONT_SIZE_REM: f32 = 0.625;
 pub const TEXT_2XS_LINE_HEIGHT_REM: f32 = 0.875;
-pub const OPACITY_DISABLED: f32 = 0.4;

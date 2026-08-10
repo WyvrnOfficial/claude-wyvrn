@@ -10,13 +10,15 @@
 - The project's brand token files (paths declared in `.claude-wyvrn-local/conventions/design.md`) are the only source of visual values. Generated from `~/.claude-wyvrn/extensions/design-system/tokens/<brand>.tokens.json`; never edit generated token files by hand.
 - No literal colors outside the token files. This covers hex (`#44d62c`), `rgb()`/`rgba()`, `hsl()`/`hsla()`, `0xRRGGBB`, `Color32::from_rgb*`, XAML `Color="#..."`, QML `color: "#..."`.
 - No new color, radius, or font value without first adding a token to the project override file. "It is close enough to the brand green" is a violation.
-- Do not restyle from screenshots of razer.com or wyvrn.com. Tokens are the contract.
+- Token names are the brand's own; do not rename them. synapse mirrors the poppin @theme byte for byte (`razer-green`, `off-white`, `grey`, `surface*`, ...).
+- Do not restyle from screenshots of razer.com or wyvrn.com. Tokens are the contract; recipes with exact classes live in `~/.claude-wyvrn/extensions/design-system/recipes/<brand>-web.md` when present.
 
 ## Surface and depth
 
-- Depth comes from surface contrast between the `canvas` and `surface*` tokens -- never from drop shadows.
-- The direction of the hierarchy is brand-specific and stated in the project design.md (Razer: cards darker than canvas; Wyvrn: surfaces lighter than a pure-black canvas).
-- Glow is prohibited. The single exception: the Wyvrn `accent-glow` token where the project design.md sanctions it.
+- Depth comes from surface contrast between the `canvas` and `surface*` tokens, never from drop shadows on static surfaces.
+- Floating overlays are the only shadow exception (synapse: Select panels, menus and tooltips carry `shadow-lg`, per the poppin-derived recipes).
+- The direction of the hierarchy is brand-specific and stated in the project design.md (synapse: cards darker than canvas; wyvrn: surfaces lighter than a pure-black canvas).
+- Glow is prohibited. The single exception: the wyvrn `accent-glow` token where the project design.md sanctions it.
 
 ## Spacing
 
@@ -31,9 +33,16 @@
 
 ## States
 
-- Disabled: `opacity.disabled` token, and zero hover/press feedback while disabled.
-- Press: brightness shift only. No scale bounce, no glow, no color swap to a non-token value.
-- Focus: inset ring in the `accent` token. Never the browser/framework default outline in final UI.
+- Disabled: 40 percent opacity, cursor-not-allowed, and ZERO hover/press feedback while disabled.
+- Hover: brightness up on filled controls, border lighten on bordered fields. Press: brightness down only. No scale bounce, no glow, no color swap to a non-token value.
+- Selection and focus: INSET rings (no layout shift), never borders, never outlines, never the browser default in final UI.
+- Transitions stay crisp (synapse: 100ms). Exact per-component classes are in the brand recipes file.
+
+## Document head (synapse)
+
+- `<title>` format follows razer.com: `Razer <tool name> | For Gamers. By Gamers.`
+- Favicon: the razer.com 96x96 PNG (served at `https://www.razer.com/favicon.png`), shipped as `/favicon.png`, `type="image/png"`.
+- `<meta name="theme-color">` is the canvas token. Charset utf-8, standard viewport, preload links for the local RazerF5 files.
 
 ## Prohibitions
 

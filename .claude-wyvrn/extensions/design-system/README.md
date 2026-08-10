@@ -1,15 +1,20 @@
 # design-system extension
 
-Brand tokens for Razer (Synapse 5) and Wyvrn, consumed by `/wyvrn-apply-design` and enforced by `conventions/design.md` + `/wyvrn-design-audit`.
+Brand tokens and recipes for Synapse and Wyvrn, consumed by `/wyvrn-apply-design` and enforced by `conventions/design.md` + `/wyvrn-design-audit`.
 
 ## Contract
 
-`tokens/<brand>.tokens.json` (W3C DTCG format) is the single source of truth. Everything under `generated/` is derived output -- never edit generated files by hand; edit the JSON and regenerate.
+`tokens/<brand>.tokens.json` (W3C DTCG format) is the single source of truth for values. Everything under `generated/` is derived output -- never edit generated files by hand; edit the JSON and regenerate.
 
 ```
-node scripts/generate-tokens.mjs           # all brands
-node scripts/generate-tokens.mjs razer     # one brand
+node scripts/generate-tokens.mjs            # all brands
+node scripts/generate-tokens.mjs synapse    # one brand
 ```
+
+## Brands and provenance
+
+- **synapse** -- byte-faithful mirror of the poppin `@theme` (poppin/src/styles/globals.css, the Synapse 5 system redlined off the 'Poppin web app' Figma). Token names are poppin's own (`razer-green`, `off-white`, `grey`, `surface*`), so poppin can consume `generated/synapse/theme.css` verbatim. State rules, borders, motion, component recipes and the document-head template are in `recipes/synapse-web.md`, every line cited from poppin. Nothing invented.
+- **wyvrn** -- extracted from the wyvrn.com design system (WyvrnOfficial/wyvrn, src/index.css).
 
 ## Generated formats
 
@@ -22,12 +27,6 @@ node scripts/generate-tokens.mjs razer     # one brand
 
 Adding a stack (XAML, QML, Unity USS, Python, C++ header) = one emitter function in `scripts/generate-tokens.mjs` wired into `FORMATS`, plus an audit pattern row in `conventions/design.md`. Tauri and Electron frontends are web: they use the CSS artifacts, no native generator needed.
 
-## Token semantics shared across brands
-
-`color.canvas` / `color.surface*` (depth by contrast -- direction is brand-specific), `color.accent`, `color.text*`, `font.display` / `font.body`, `spacing.unit` (4px grid), `radius.*`, `opacity.disabled`.
-
-Brand-specific facts live in each JSON's `$description`: Razer cards sit darker than the canvas and glow is prohibited; Wyvrn surfaces sit lighter than a pure-black canvas and glow exists only as `color.accent-glow`.
-
 ## Fonts are NOT shipped here
 
-RazerF5 is a proprietary Razer asset and this repository is public. `/wyvrn-apply-design` verifies the target project carries the font files and points to an internal source when missing. Roboto is fetchable from Fontsource/Google Fonts.
+Fonts are downloaded INTO each project by `/wyvrn-apply-design`, from official sources only: poppin's TTF set when reachable on disk, else the woffs razer.com itself serves (`https://www.razer.com/assets/fonts/RazerF5.woff`, `RazerF5SemiBold.woff`). Roboto comes from `@fontsource/roboto`. No binaries in this repository (public repo, proprietary font).
