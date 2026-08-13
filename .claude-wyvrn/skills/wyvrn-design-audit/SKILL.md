@@ -7,6 +7,8 @@ description: Mechanically audits styled code against the project's declared bran
 
 Read-only audit of styled code against `conventions/design.md` (global) + `.claude-wyvrn-local/conventions/design.md` (project). Returns a findings list. Fixing is `/flow` work.
 
+Also runs automatically (in `--full` scope) at the end of `/wyvrn-apply-design`, where its total becomes the project's violation baseline.
+
 ## Preconditions
 
 - `~/.claude-wyvrn/VERSION` missing -> halt: `Wyvrn harness not installed. Run claude-wyvrn install.`
