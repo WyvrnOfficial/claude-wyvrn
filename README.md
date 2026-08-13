@@ -39,7 +39,7 @@ If you're upgrading from v1.x:
 | `conventions/gitflow.md` | Branching and commit conventions. |
 | `conventions/<stack>.md` | Stack-specific rules (javascript, typescript, python, csharp, cpp, react). |
 | `conventions/design.md` | Brand design rules. Guarded: applies only when the project declares a brand via `/wyvrn-apply-design`. |
-| `extensions/design-system/` | Brand token sources (DTCG JSON), generator script, generated per-stack artifacts (Tailwind, CSS, SCSS, Rust), and the Synapse web recipes. Fonts are NOT shipped; they are downloaded per project from official sources. |
+| `extensions/design-system/` | Brand token sources (DTCG JSON), generator script, generated per-stack artifacts (Tailwind, CSS, SCSS, Rust), and the per-brand web recipes (synapse, wyvrn). Fonts are NOT shipped; they are downloaded per project from official sources. |
 | `templates/conventions.md` | Only template kept; used by `/wyvrn-refresh-context` when creating a new project stack-conventions file. |
 | `skills/flow/SKILL.md` | `/flow` - inline runbook. One of the two execution modes. |
 | `skills/subagent-driven-development/` | `/subagent-dev` - the other execution mode: a fresh implementer subagent per task, a reviewer subagent gating each one. Ships `implementer-prompt.md`, `task-reviewer-prompt.md`, and `scripts/` (`sdd-workspace`, `task-brief`, `review-package`, `branch-base`). |

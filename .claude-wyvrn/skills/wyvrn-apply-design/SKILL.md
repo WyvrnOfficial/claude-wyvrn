@@ -57,18 +57,27 @@ The package does NOT ship font binaries; fonts land in each project from their o
 2. For synapse, two official sources:
    - Download the official woffs from razer.com: `https://www.razer.com/assets/fonts/RazerF5.woff` (400), `https://www.razer.com/assets/fonts/RazerF5SemiBold.woff` (600) and `https://www.razer.com/assets/fonts/RazerF5Bold.woff` (700). Confirm via AskUserQuestion header `Fonts` before fetching.
    - Or copy a RazerF5 set already present in a sibling Synapse project on disk, when one is reachable.
-3. Destination: the project's font/assets folder (`src/assets/font/`, or `public/assets/fonts/` for plain-HTML projects).
-4. Wire `@font-face` (`font-family: 'RazerF5'`, `font-display: swap`) per the recipes file. Roboto via `@fontsource/roboto` when npm is present.
-5. Never fetch from any URL other than the official ones listed in the recipes file.
+3. For wyvrn: copy the 6-weight dehinted RazerF5 TTF set (COPYRIGHT.txt and LICENSE.txt included) from a sibling wyvrn checkout, per the recipes file. No official woff endpoint exists for this set.
+4. Destination: the project's font/assets folder (`src/assets/font/`, or `public/assets/fonts/` for plain-HTML projects).
+5. Wire `@font-face` per the recipes file (`font-family: 'RazerF5'` for synapse, `'Razer F5'` WITH the space for wyvrn; `font-display: swap`). Roboto via `@fontsource/roboto` when npm is present (synapse only).
+6. Never fetch from any URL other than the official ones listed in the recipes file.
 
-## Step 6 -- Document head (synapse)
+## Step 6 -- Document head
 
-Align `index.html` (or the host page) on the Synapse head, per the recipes template:
+Align `index.html` (or the host page) on the brand head, per the recipes template.
+
+For synapse:
 
 1. `<title>` format: `Razer <tool name> | For Gamers. By Gamers.`
 2. Favicon: download `https://www.razer.com/favicon.png` (razer.com's own 96x96 PNG) to `/favicon.png`; link it with `type="image/png"`.
 3. `<meta name="theme-color">` = the canvas token value. Charset utf-8, standard viewport.
 4. Preload links for the local font files.
+
+For wyvrn:
+
+1. `<title>` pattern: `WYVRN <tool name>` (no razer.com suffix).
+2. Meta description + matching `og:`/`twitter:` pairs and a canonical link, per the recipes template.
+3. Favicon: `/favicon.ico` shipped locally; never hotlink it.
 
 Show the head diff and confirm via AskUserQuestion before editing an existing head. Never touch meta tags outside this list.
 

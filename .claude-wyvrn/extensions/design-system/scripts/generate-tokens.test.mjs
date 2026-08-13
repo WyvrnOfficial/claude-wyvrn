@@ -48,6 +48,15 @@ test('vars.css carries the animation, keyframes and body baseline', () => {
   assert.match(css, /background-color: var\(--wds-color-canvas\);/);
 });
 
+test('wyvrn artifacts carry the curated brand additions', () => {
+  const css = readArtifact('wyvrn', 'theme.css');
+  assert.match(css, /--color-on-accent: #000000;/);
+  assert.match(css, /--opacity-disabled: 0\.5;/);
+  assert.match(css, /--animate-float-soft: float-soft 4s ease-in-out infinite;/);
+  assert.match(css, /@keyframes float-soft \{/);
+  assert.match(css, /transform: translateY\(-8px\);/);
+});
+
 test('scss carries the animation variable; rust skips web-only animation', () => {
   assert.match(
     readArtifact('synapse', 'tokens.scss'),

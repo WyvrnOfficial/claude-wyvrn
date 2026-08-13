@@ -46,9 +46,9 @@
 
 ## Prohibitions
 
-- No framework-default look: default Tailwind palette classes (`bg-gray-*`, `text-blue-*`, `bg-slate-*`, ...), default shadcn/ui radii and shadows, unstyled browser form controls.
+- No framework-default look: default Tailwind palette classes (`bg-gray-*`, `text-blue-*`, `bg-slate-*`, ...), unstyled browser form controls, and default shadcn/ui radii and shadows -- except wyvrn, which is shadcn-based: its sanctioned shadcn usage is the one in the wyvrn recipes.
 - No emoji as icons.
-- No decorative animation beyond what a token or the project design.md declares. Motion is crisp and short; no infinite ambient loops in tools.
+- No decorative animation beyond what a token or the project design.md declares. Motion is crisp and short; no infinite ambient loops in tools. Wyvrn marketing surfaces are the exception: the ambient loops sanctioned in the wyvrn recipes are allowed there.
 
 ## Audit
 

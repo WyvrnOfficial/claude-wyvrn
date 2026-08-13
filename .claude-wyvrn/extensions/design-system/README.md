@@ -14,7 +14,7 @@ node scripts/generate-tokens.mjs synapse    # one brand
 ## Brands and provenance
 
 - **synapse** -- the Synapse 5 system, redlined off the official Figma. Token names are the canonical Synapse names (`razer-green`, `off-white`, `grey`, `surface*`), so existing Synapse projects consume `generated/synapse/theme.css` verbatim. State rules, borders, motion, component recipes and the document-head template are in `recipes/synapse-web.md`, all extracted from the reference implementation. Nothing invented.
-- **wyvrn** -- extracted from the wyvrn.com design system (WyvrnOfficial/wyvrn, src/index.css).
+- **wyvrn** -- extracted from the wyvrn.com reference implementation (WyvrnOfficial/wyvrn: src/index.css, tailwind.config.ts, the shadcn/ui set), curated: known reference bugs are corrected and each deviation is listed in `recipes/wyvrn-web.md`, alongside the shadcn name mapping, states, glow, motion vocabulary and component recipes.
 
 ## Generated formats
 
@@ -29,4 +29,4 @@ Adding a stack (XAML, QML, Unity USS, Python, C++ header) = one emitter function
 
 ## Fonts are NOT shipped here
 
-Fonts are downloaded INTO each project by `/wyvrn-apply-design`, from official sources only: the woffs razer.com itself serves (`https://www.razer.com/assets/fonts/RazerF5.woff`, `RazerF5SemiBold.woff`), or a RazerF5 set already present in a sibling Synapse project. Roboto comes from `@fontsource/roboto`. No binaries in this repository (public repo, proprietary font).
+Fonts are downloaded INTO each project by `/wyvrn-apply-design`, from official sources only: the woffs razer.com itself serves (`https://www.razer.com/assets/fonts/RazerF5.woff`, `RazerF5SemiBold.woff`, `RazerF5Bold.woff`), or a RazerF5 set already present in a sibling Synapse project. For wyvrn, the 6-weight dehinted TTF set (license files included) is copied from a sibling wyvrn checkout; the family name is `'Razer F5'` with the space. Roboto comes from `@fontsource/roboto` (synapse). No binaries in this repository (public repo, proprietary font).

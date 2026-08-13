@@ -8,6 +8,7 @@
   --wds-color-accent: #44d62c;
   --wds-color-accent-dark: #34ab21;
   --wds-color-accent-light: #7ae26a;
+  --wds-color-on-accent: #000000;
   --wds-color-accent-glow: #44d62c33;
   --wds-color-text: #ffffff;
   --wds-color-text-muted: #a6a6a6;
@@ -20,7 +21,17 @@
   --wds-radius-sm: 4px;
   --wds-radius-md: 6px;
   --wds-radius-lg: 8px;
-  --wds-opacity-disabled: 0.4;
+  --wds-opacity-disabled: 0.5;
+  --wds-animate-float-soft: float-soft 4s ease-in-out infinite;
+}
+
+@keyframes float-soft {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 /* Brand baseline: the canvas, the primary text color and the display face land on body. */
