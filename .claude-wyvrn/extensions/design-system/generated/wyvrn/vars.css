@@ -22,3 +22,10 @@
   --wds-radius-lg: 8px;
   --wds-opacity-disabled: 0.4;
 }
+
+/* Brand baseline: the canvas, the primary text color and the display face land on body. */
+body {
+  background-color: var(--wds-color-canvas);
+  color: var(--wds-color-text);
+  font-family: var(--wds-font-display);
+}

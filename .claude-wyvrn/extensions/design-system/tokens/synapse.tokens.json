@@ -36,5 +36,18 @@
       "$value": { "fontSize": "0.625rem", "lineHeight": "0.875rem" },
       "$description": "Tag label size (10px)."
     }
+  },
+  "animate": {
+    "tile-enter": {
+      "$type": "animation",
+      "$value": {
+        "animation": "tile-enter 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both",
+        "keyframes": {
+          "from": { "opacity": "0", "transform": "translateY(8px) scale(0.98)" },
+          "to": { "opacity": "1", "transform": "none" }
+        }
+      },
+      "$description": "The one entrance animation: a crisp rise-and-fade for freshly added tiles, no glow."
+    }
   }
 }

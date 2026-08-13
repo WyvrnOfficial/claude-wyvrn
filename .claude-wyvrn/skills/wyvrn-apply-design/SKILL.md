@@ -55,7 +55,7 @@ The package does NOT ship font binaries; fonts land in each project from their o
 
 1. Grep the project for existing brand font assets (`RazerF5*`, `Roboto*`) and `@font-face`/font-loading declarations. Skip whatever is already wired.
 2. For synapse, two official sources:
-   - Download the official woffs from the razer.com head: `https://www.razer.com/assets/fonts/RazerF5.woff` (400) and `https://www.razer.com/assets/fonts/RazerF5SemiBold.woff` (600). Confirm via AskUserQuestion header `Fonts` before fetching.
+   - Download the official woffs from razer.com: `https://www.razer.com/assets/fonts/RazerF5.woff` (400), `https://www.razer.com/assets/fonts/RazerF5SemiBold.woff` (600) and `https://www.razer.com/assets/fonts/RazerF5Bold.woff` (700). Confirm via AskUserQuestion header `Fonts` before fetching.
    - Or copy a RazerF5 set already present in a sibling Synapse project on disk, when one is reachable.
 3. Destination: the project's font/assets folder (`src/assets/font/`, or `public/assets/fonts/` for plain-HTML projects).
 4. Wire `@font-face` (`font-family: 'RazerF5'`, `font-display: swap`) per the recipes file. Roboto via `@fontsource/roboto` when npm is present.

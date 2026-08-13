@@ -23,4 +23,23 @@
   --tracking-eyebrow: 0.2em;
   --text-2xs: 0.625rem;
   --text-2xs--line-height: 0.875rem;
+  --animate-tile-enter: tile-enter 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+  @keyframes tile-enter {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* Brand baseline: the canvas, the primary text color and the display face land on body. */
+body {
+  background-color: var(--color-canvas);
+  color: #ffffff;
+  font-family: var(--font-display);
 }

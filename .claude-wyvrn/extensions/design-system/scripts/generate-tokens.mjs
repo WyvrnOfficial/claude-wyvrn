@@ -49,6 +49,37 @@ const parseDim = (v) => {
   return m ? { num: parseFloat(m[1]), unit: m[2] } : null;
 };
 
+// @keyframes body shared by the CSS emitters; `indent` matches the
+// nesting depth (inside @theme for Tailwind, top-level for vars.css).
+function keyframesLines(t, indent) {
+  const lines = [`${indent}@keyframes ${t.path.at(-1)} {`];
+  for (const [stop, props] of Object.entries(t.value.keyframes)) {
+    lines.push(`${indent}  ${stop} {`);
+    for (const [prop, val] of Object.entries(props)) lines.push(`${indent}    ${prop}: ${val};`);
+    lines.push(`${indent}  }`);
+  }
+  lines.push(`${indent}}`);
+  return lines;
+}
+
+// The brand baseline only makes sense when the brand defines a canvas
+// and a display face; text falls back to plain white (the reference
+// implementation sets #ffffff on body).
+function bodyBaselineLines(tokens, varName) {
+  const paths = new Set(tokens.map((t) => t.path.join('.')));
+  if (!paths.has('color.canvas') || !paths.has('font.display')) return [];
+  const text = paths.has('color.text') ? `var(${varName('color-text')})` : '#ffffff';
+  return [
+    '/* Brand baseline: the canvas, the primary text color and the display face land on body. */',
+    'body {',
+    `  background-color: var(${varName('color-canvas')});`,
+    `  color: ${text};`,
+    `  font-family: var(${varName('font-display')});`,
+    '}',
+    '',
+  ];
+}
+
 function emitThemeCss(brand, tokens) {
   const lines = [
     `/* Generated from ${brand}.tokens.json -- do not edit by hand. */`,
@@ -67,9 +98,14 @@ function emitThemeCss(brand, tokens) {
       lines.push(`  --text-${name}: ${t.value.fontSize};`);
       lines.push(`  --text-${name}--line-height: ${t.value.lineHeight};`);
     } else if (group === 'opacity') lines.push(`  --opacity-${name}: ${t.value};`);
+    else if (t.type === 'animation') lines.push(`  --animate-${name}: ${t.value.animation};`);
     else lines.push(`  --${t.path.join('-')}: ${t.value};`);
   }
+  for (const t of tokens.filter((t) => t.type === 'animation')) {
+    lines.push('', ...keyframesLines(t, '  '));
+  }
   lines.push('}', '');
+  lines.push(...bodyBaselineLines(tokens, (name) => `--${name}`));
   return lines.join('\n');
 }
 
@@ -85,9 +121,14 @@ function emitVarsCss(brand, tokens) {
     else if (t.type === 'typography') {
       lines.push(`  --wds-${name}-font-size: ${t.value.fontSize};`);
       lines.push(`  --wds-${name}-line-height: ${t.value.lineHeight};`);
-    } else lines.push(`  --wds-${name}: ${t.value};`);
+    } else if (t.type === 'animation') lines.push(`  --wds-${name}: ${t.value.animation};`);
+    else lines.push(`  --wds-${name}: ${t.value};`);
   }
   lines.push('}', '');
+  for (const t of tokens.filter((t) => t.type === 'animation')) {
+    lines.push(...keyframesLines(t, ''), '');
+  }
+  lines.push(...bodyBaselineLines(tokens, (name) => `--wds-${name}`));
   return lines.join('\n');
 }
 
@@ -99,7 +140,8 @@ function emitScss(brand, tokens) {
     else if (t.type === 'typography') {
       lines.push(`$wds-${name}-font-size: ${t.value.fontSize};`);
       lines.push(`$wds-${name}-line-height: ${t.value.lineHeight};`);
-    } else lines.push(`$wds-${name}: ${t.value};`);
+    } else if (t.type === 'animation') lines.push(`$wds-${name}: ${t.value.animation};`);
+    else lines.push(`$wds-${name}: ${t.value};`);
   }
   lines.push('');
   return lines.join('\n');
