@@ -39,3 +39,7 @@ None (no PROJECT.md/ARCHITECTURE.md in this repo; README's design-system paragra
 - Agent-assisted actual: ~25 min end to end (audit + fix).
 - Time saved: ~3h 35m (90%).
 - Basis: 9 files touched across two repos; the audit half (reading every poppin ui component and mapping it to recipe lines) dominates the human baseline; largest uncertainty is how fast a human already familiar with both repos would be.
+
+## Addendum - same day, benchmark removal
+
+User decision while reviewing the pitch: the Wyvrn Doctor A/B benchmark prompt leaves the repo. `git rm .claude-wyvrn/extensions/design-system/benchmark/wyvrn-doctor-prompt.md`; grep confirmed zero references elsewhere (README, skills, recipes), so the deletion is clean. Noted during the same pass: an untracked Next.js app (`wyvrn-drop`) and a modified .gitignore appeared in the working tree mid-session from outside this flow; left untouched, commit scoped to the deletion only.
