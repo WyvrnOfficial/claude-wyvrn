@@ -9,7 +9,7 @@
 
 ## Naming
 
-> [template] Conventions for naming variables, functions, classes, files, types, constants, modules. Specific and testable — "camelCase for function names" not "clear names".
+> [template] Conventions for naming variables, functions, classes, files, types, constants, modules. Specific and testable - "camelCase for function names" not "clear names".
 
 <naming conventions>
 

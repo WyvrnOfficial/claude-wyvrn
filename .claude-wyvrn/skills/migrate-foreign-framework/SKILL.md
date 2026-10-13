@@ -1,14 +1,14 @@
 ---
 name: migrate-foreign-framework
-description: Migrate a project into the current claude-wyvrn (v2.0.0) layout. Handles two cases (independently or together): (1) foreign Claude framework — hand-written CLAUDE.md or ad-hoc Claude files at the project root; (2) previous Wyvrn version — v1.x `.claude-wyvrn-local/` containing folders removed in v2.0.0. Harvests preservable content; archives the originals and the removed v1.x folders.
+description: Migrate a project into the current claude-wyvrn (v2.0.0) layout. Handles two cases (independently or together): (1) foreign Claude framework - hand-written CLAUDE.md or ad-hoc Claude files at the project root; (2) previous Wyvrn version - v1.x `.claude-wyvrn-local/` containing folders removed in v2.0.0. Harvests preservable content; archives the originals and the removed v1.x folders.
 ---
 
 # migrate-foreign-framework
 
 Migrates a project into the v2.0.0 layout. Handles either or both of:
 
-1. **Foreign Claude framework** — hand-written `CLAUDE.md` or ad-hoc Claude files at the project root. Harvests project content into PROJECT.md / ARCHITECTURE.md / project conventions; archives the originals.
-2. **Previous Wyvrn version (v1.x)** — `.claude-wyvrn-local/` containing folders removed in v2.0.0 (`features/`, `fixes/`, `refactors/`, `decisions/`, `clarifications/`, `reviews/`, `verifier-gaps/`, `.metrics/`). Archives the removed folders; preserves PROJECT.md, ARCHITECTURE.md, and `conventions/`.
+1. **Foreign Claude framework** - hand-written `CLAUDE.md` or ad-hoc Claude files at the project root. Harvests project content into PROJECT.md / ARCHITECTURE.md / project conventions; archives the originals.
+2. **Previous Wyvrn version (v1.x)** - `.claude-wyvrn-local/` containing folders removed in v2.0.0 (`features/`, `fixes/`, `refactors/`, `decisions/`, `clarifications/`, `reviews/`, `verifier-gaps/`, `.metrics/`). Archives the removed folders; preserves PROJECT.md, ARCHITECTURE.md, and `conventions/`.
 
 After migration, installs the v2.0.0 CLAUDE.md template at the project root if not already present.
 
@@ -22,7 +22,7 @@ After migration, installs the v2.0.0 CLAUDE.md template at the project root if n
 
 - Parallelize independent reads, moves, and writes.
 - All confirmations via `AskUserQuestion`.
-- **POSIX syntax in Bash.** Never use PowerShell here-string syntax (`@'...'@`, `@"..."@`) in the Bash tool — it leaks stray `@` characters. Multi-line strings and commit messages use POSIX constructs (heredoc, or multiple `-m` flags).
+- **POSIX syntax in Bash.** Never use PowerShell here-string syntax (`@'...'@`, `@"..."@`) in the Bash tool - it leaks stray `@` characters. Multi-line strings and commit messages use POSIX constructs (heredoc, or multiple `-m` flags).
 
 ## Preconditions
 
@@ -30,7 +30,7 @@ After migration, installs the v2.0.0 CLAUDE.md template at the project root if n
 
 ## Constraints
 
-- **Ignore `./.claude/`** entirely. That folder is Claude Code's own settings — unrelated to Wyvrn. Never read, write, or touch.
+- **Ignore `./.claude/`** entirely. That folder is Claude Code's own settings - unrelated to Wyvrn. Never read, write, or touch.
 - **Never silently overwrite project files.** Writes go to new paths or paths explicitly authorized by the plan.
 - **Always archive before deleting.** Foreign files and v1.x folders move to `.claude-wyvrn-local/.archive/migration-<ISO_TIMESTAMP>/`. Never `rm`.
 - **Preserve v2.0.0-relevant artifacts.** `PROJECT.md`, `ARCHITECTURE.md`, `conventions/`, `plans/`, and any existing `.archive/` content are NOT moved.
@@ -61,10 +61,10 @@ Note presence and item counts per folder. Do not modify anything yet.
 
 **For foreign-framework files**, classify each meaningful piece:
 
-- **Framework-specific (discard)** — generic "you are an AI assistant", boilerplate the harness supplies, instructions contradicting universal conventions.
-- **Project description / context (preserve → PROJECT.md)** — name, purpose, domain, business rules, gotchas, idioms.
-- **Architecture (preserve → ARCHITECTURE.md)** — module layout, interfaces, invariants, system overview.
-- **Stack conventions (preserve → conventions/<stack>.md)** — project-specific rules about a tech stack.
+- **Framework-specific (discard)** - generic "you are an AI assistant", boilerplate the harness supplies, instructions contradicting universal conventions.
+- **Project description / context (preserve → PROJECT.md)** - name, purpose, domain, business rules, gotchas, idioms.
+- **Architecture (preserve → ARCHITECTURE.md)** - module layout, interfaces, invariants, system overview.
+- **Stack conventions (preserve → conventions/<stack>.md)** - project-specific rules about a tech stack.
 
 When uncertain, preserve.
 
@@ -125,7 +125,7 @@ Chunk into sequential calls when the plan is very large.
    - `.claude-wyvrn-local/ARCHITECTURE.md` if any architecture content preserved AND the file does not already exist.
    - `.claude-wyvrn-local/conventions/<stack>.md` for each preserved stack ruleset (start from `~/.claude-wyvrn/templates/conventions.md`). Only when the file does not already exist.
 3. **Install harness CLAUDE.md** at project root from `~/.claude-wyvrn/CLAUDE.md`, unless the existing project-root CLAUDE.md is already byte-identical or a v2.0.0 `@`-import.
-4. **Print summary** — archived, written, preserved, discarded paths.
+4. **Print summary** - archived, written, preserved, discarded paths.
 
 ## Edge cases
 
@@ -164,7 +164,7 @@ Wrote:
   - .claude-wyvrn-local/conventions/typescript.md (new)
 
 Preserved (still relevant in v2.0.0):
-  - .claude-wyvrn-local/PROJECT.md (already filled — left alone)
+  - .claude-wyvrn-local/PROJECT.md (already filled - left alone)
   - .claude-wyvrn-local/conventions/
 
 Discarded (covered by harness):

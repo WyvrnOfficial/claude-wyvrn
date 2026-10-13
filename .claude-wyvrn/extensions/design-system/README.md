@@ -1,0 +1,32 @@
+# design-system extension
+
+Brand tokens and recipes for Synapse and Wyvrn, consumed by `/wyvrn-apply-design` and enforced by `conventions/design.md` + `/wyvrn-design-audit`.
+
+## Contract
+
+`tokens/<brand>.tokens.json` (W3C DTCG format) is the single source of truth for values. Everything under `generated/` is derived output -- never edit generated files by hand; edit the JSON and regenerate.
+
+```
+node scripts/generate-tokens.mjs            # all brands
+node scripts/generate-tokens.mjs synapse    # one brand
+```
+
+## Brands and provenance
+
+- **synapse** -- the Synapse 5 system, redlined off the official Figma. Token names are the canonical Synapse names (`razer-green`, `off-white`, `grey`, `surface*`), so existing Synapse projects consume `generated/synapse/theme.css` verbatim. State rules, borders, motion, component recipes and the document-head template are in `recipes/synapse-web.md`, all extracted from the reference implementation. Nothing invented.
+- **wyvrn** -- extracted from the wyvrn.com reference implementation (WyvrnOfficial/wyvrn: src/index.css, tailwind.config.ts, the shadcn/ui set), curated: known reference bugs are corrected and each deviation is listed in `recipes/wyvrn-web.md`, alongside the shadcn name mapping, states, glow, motion vocabulary and component recipes.
+
+## Generated formats
+
+| File | Stack | Consumed by |
+|---|---|---|
+| `theme.css` | Tailwind 4 (`@theme`) | Vite/React apps |
+| `vars.css` | Any CSS | Plain web tools, Electron, Tauri |
+| `tokens.scss` | SCSS | Legacy Sass builds |
+| `tokens.rs` | Rust | egui / iced / Slint tools |
+
+Adding a stack (XAML, QML, Unity USS, Python, C++ header) = one emitter function in `scripts/generate-tokens.mjs` wired into `FORMATS`, plus an audit pattern row in `conventions/design.md`. Tauri and Electron frontends are web: they use the CSS artifacts, no native generator needed.
+
+## Fonts are NOT shipped here
+
+Fonts are downloaded INTO each project by `/wyvrn-apply-design`, from official sources only: the woffs razer.com itself serves (`https://www.razer.com/assets/fonts/RazerF5.woff`, `RazerF5SemiBold.woff`, `RazerF5Bold.woff`), or a RazerF5 set already present in a sibling Synapse project. For wyvrn, the 6-weight dehinted TTF set (license files included) is copied from a sibling wyvrn checkout; the family name is `'Razer F5'` with the space. Roboto comes from `@fontsource/roboto` (synapse). No binaries in this repository (public repo, proprietary font).

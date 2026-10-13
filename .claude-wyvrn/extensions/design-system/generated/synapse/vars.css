@@ -1,0 +1,45 @@
+/* Generated from synapse.tokens.json -- do not edit by hand. */
+/* Framework-free custom properties, prefixed wds- (Wyvrn design system). */
+:root {
+  --wds-color-canvas: #282828;
+  --wds-color-surface: #141414;
+  --wds-color-surface-raised: #1b1b1b;
+  --wds-color-surface-active: #2d2d2d;
+  --wds-color-razer-green: #44d62c;
+  --wds-color-off-white: #cccccc;
+  --wds-color-grey: #999999;
+  --wds-color-ink: #0a0a0a;
+  --wds-color-ink-soft: #222222;
+  --wds-color-warning: #ffaa00;
+  --wds-color-danger: #e2231a;
+  --wds-font-display: 'RazerF5', system-ui, sans-serif;
+  --wds-font-body: 'Roboto', system-ui, sans-serif;
+  --wds-spacing-unit: 4px;
+  --wds-radius-sm: 4px;
+  --wds-radius-lg: 8px;
+  --wds-radius-xl: 12px;
+  --wds-radius-2xl: 16px;
+  --wds-radius-tabs: 25px;
+  --wds-tracking-eyebrow: 0.2em;
+  --wds-text-2xs-font-size: 0.625rem;
+  --wds-text-2xs-line-height: 0.875rem;
+  --wds-animate-tile-enter: tile-enter 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes tile-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Brand baseline: the canvas, the primary text color and the display face land on body. */
+body {
+  background-color: var(--wds-color-canvas);
+  color: #ffffff;
+  font-family: var(--wds-font-display);
+}

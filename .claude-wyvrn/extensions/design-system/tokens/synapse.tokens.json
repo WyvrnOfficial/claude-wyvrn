@@ -1,0 +1,53 @@
+{
+  "$description": "Synapse design tokens, redlined off the official Synapse 5 Figma. Token names are the canonical Synapse names; generated artifacts are drop-in for existing Synapse projects. Nothing here is invented: every value comes from the redlined reference implementation. State rules, borders, motion and component recipes live in ../recipes/synapse-web.md. Cards sit DARKER than the canvas; depth comes from surface contrast.",
+  "color": {
+    "canvas": { "$type": "color", "$value": "#282828", "$description": "App background; also the document-head theme-color." },
+    "surface": { "$type": "color", "$value": "#141414", "$description": "Cards and panels. Darker than canvas by design." },
+    "surface-raised": { "$type": "color", "$value": "#1b1b1b", "$description": "Nested panels inside a surface." },
+    "surface-active": { "$type": "color", "$value": "#2d2d2d", "$description": "Selected or hovered rows (Select options use hover:bg-surface-active)." },
+    "razer-green": { "$type": "color", "$value": "#44d62c", "$description": "The green. CTAs, active states, selected rings (razer-green/50), current Select option." },
+    "off-white": { "$type": "color", "$value": "#cccccc", "$description": "Soft text: subtitles, quiet labels, inactive tag dots. Grey scale is white -> off-white -> grey -> white/40 placeholders; #D6D6D6 does not exist." },
+    "grey": { "$type": "color", "$value": "#999999", "$description": "Muted text: idle nav items, secondary info, the SOON tag label." },
+    "ink": { "$type": "color", "$value": "#0a0a0a", "$description": "Near-black fills (the Toggle knob)." },
+    "ink-soft": { "$type": "color", "$value": "#222222", "$description": "Dark label on green CTAs, per the official button SVGs." },
+    "warning": { "$type": "color", "$value": "#ffaa00", "$description": "Warning banners and badges." },
+    "danger": { "$type": "color", "$value": "#e2231a", "$description": "Error banner red. Eyeballed off the mockup, pending the exact Figma value." }
+  },
+  "font": {
+    "display": { "$type": "fontFamily", "$value": ["RazerF5", "system-ui", "sans-serif"], "$description": "Headings, nav, buttons, labels. Body text color is plain white, set on body." },
+    "body": { "$type": "fontFamily", "$value": ["Roboto", "system-ui", "sans-serif"], "$description": "Body copy, profile-card names, state pills." }
+  },
+  "spacing": {
+    "unit": { "$type": "dimension", "$value": "4px", "$description": "Literal 4px step: p-1 4, p-2 8, p-3 12, p-4 16, p-6 24, p-8 32. Two sanctioned off-grid values: the 10px search icon gap and the 146px page gutter, kept arbitrary at their use sites." }
+  },
+  "radius": {
+    "sm": { "$type": "dimension", "$value": "4px", "$description": "Button, Input, Select, hero chips, SOON tag." },
+    "lg": { "$type": "dimension", "$value": "8px", "$description": "Status chips, tile covers, editor panels, profile cards." },
+    "xl": { "$type": "dimension", "$value": "12px", "$description": "List panels, app tiles." },
+    "2xl": { "$type": "dimension", "$value": "16px", "$description": "List rows, banners, accordion panels." },
+    "tabs": { "$type": "dimension", "$value": "25px", "$description": "Switcher bars, the one off-grid radius." }
+  },
+  "tracking": {
+    "eyebrow": { "$type": "dimension", "$value": "0.2em", "$description": "Single tracking for uppercase eyebrows and micro-labels." }
+  },
+  "text": {
+    "2xs": {
+      "$type": "typography",
+      "$value": { "fontSize": "0.625rem", "lineHeight": "0.875rem" },
+      "$description": "Tag label size (10px)."
+    }
+  },
+  "animate": {
+    "tile-enter": {
+      "$type": "animation",
+      "$value": {
+        "animation": "tile-enter 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both",
+        "keyframes": {
+          "from": { "opacity": "0", "transform": "translateY(8px) scale(0.98)" },
+          "to": { "opacity": "1", "transform": "none" }
+        }
+      },
+      "$description": "The one entrance animation: a crisp rise-and-fade for freshly added tiles, no glow."
+    }
+  }
+}

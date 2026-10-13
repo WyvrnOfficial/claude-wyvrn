@@ -1,0 +1,47 @@
+{
+  "$description": "Wyvrn brand design tokens. Source of truth for every generated artifact in ../generated/wyvrn/. Extracted from the wyvrn.com reference implementation (WyvrnOfficial/wyvrn, src/index.css + tailwind.config.ts), CURATED: known reference bugs are corrected and every deviation is listed in ../recipes/wyvrn-web.md. Harness token names are kept (canvas/surface/accent); the shadcn name mapping lives in the recipes. Canvas is pure black; surfaces sit LIGHTER than the canvas. Glow is sanctioned only through the accent-glow token.",
+  "color": {
+    "canvas": { "$type": "color", "$value": "#000000", "$description": "App background. Pure black." },
+    "surface": { "$type": "color", "$value": "#1a1a1a", "$description": "Cards. Lighter than canvas by design." },
+    "surface-overlay": { "$type": "color", "$value": "#0d0d0d", "$description": "Popovers and overlays." },
+    "surface-muted": { "$type": "color", "$value": "#262626", "$description": "Muted fills, input backgrounds." },
+    "accent": { "$type": "color", "$value": "#44d62c", "$description": "Wyvrn green. Primary actions, links, focus rings." },
+    "accent-dark": { "$type": "color", "$value": "#34ab21", "$description": "Pressed and hover-dark accent variant." },
+    "accent-light": { "$type": "color", "$value": "#7ae26a", "$description": "Light accent variant for highlights." },
+    "on-accent": { "$type": "color", "$value": "#000000", "$description": "Label on accent fills (the site's primary-foreground): black text on the green." },
+    "accent-glow": { "$type": "color", "$value": "#44d62c33", "$description": "The only sanctioned glow. box-shadow color; never glow with any other value." },
+    "text": { "$type": "color", "$value": "#ffffff", "$description": "Primary text." },
+    "text-muted": { "$type": "color", "$value": "#a6a6a6", "$description": "Secondary text and idle labels." },
+    "border": { "$type": "color", "$value": "#1a1a1a", "$description": "Default borders." },
+    "border-strong": { "$type": "color", "$value": "#a6a6a6", "$description": "Card borders needing emphasis." },
+    "danger": { "$type": "color", "$value": "#ef4444", "$description": "Destructive actions and errors." }
+  },
+  "font": {
+    "display": { "$type": "fontFamily", "$value": ["Razer F5", "system-ui", "sans-serif"], "$description": "Headings and UI chrome." },
+    "body": { "$type": "fontFamily", "$value": ["Razer F5", "system-ui", "sans-serif"], "$description": "Body copy. Wyvrn uses F5 throughout." }
+  },
+  "spacing": {
+    "unit": { "$type": "dimension", "$value": "4px", "$description": "Base grid step. Every spacing value is a multiple of this." }
+  },
+  "radius": {
+    "sm": { "$type": "dimension", "$value": "4px", "$description": "Small controls and chips." },
+    "md": { "$type": "dimension", "$value": "6px", "$description": "Inputs and buttons." },
+    "lg": { "$type": "dimension", "$value": "8px", "$description": "Cards and panels. Base radius of the system." }
+  },
+  "opacity": {
+    "disabled": { "$type": "number", "$value": 0.5, "$description": "Disabled controls: opacity-50 + pointer-events-none, the reference standard across the shadcn set. Sparse exceptions (30, 70) stay at their use sites." }
+  },
+  "animate": {
+    "float-soft": {
+      "$type": "animation",
+      "$value": {
+        "animation": "float-soft 4s ease-in-out infinite",
+        "keyframes": {
+          "0%, 100%": { "transform": "translateY(0)" },
+          "50%": { "transform": "translateY(-8px)" }
+        }
+      },
+      "$description": "The reusable ambient float of wyvrn marketing surfaces. Ambient loops are sanctioned for this brand only; the full motion vocabulary lives in the recipes."
+    }
+  }
+}

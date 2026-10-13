@@ -7,7 +7,7 @@
 
 - All naming rules from `typescript.md` apply, with the overrides below.
 - Components, pages, entities, builders, atoms, classes: `PascalCase`. Hooks: `camelCase` starting with `use`.
-- File pattern: `<Name>.<folderType>.<ext>` — `.hook.ts`, `.atom.ts`, `.builder.ts`, `.entity.ts`, `.page.tsx`, `.test.tsx`. Components are the exception: `<ComponentName>.tsx` inside `<ComponentName>/`.
+- File pattern: `<Name>.<folderType>.<ext>` - `.hook.ts`, `.atom.ts`, `.builder.ts`, `.entity.ts`, `.page.tsx`, `.test.tsx`. Components are the exception: `<ComponentName>.tsx` inside `<ComponentName>/`.
 - Component prop interfaces: `I<ComponentName>` (`IUserCard`). Exported type alias: `<ComponentName>Props = I<ComponentName>`. This overrides the no-`I`-prefix rule from `typescript.md`.
 - Action components: `<Type><Action>` (`ButtonSubmit`, `LinkDownload`). Type comes first.
 - Entity components: `<Entity><Type>` (`UserList`, `OrderCard`). Entity comes first.
@@ -32,7 +32,7 @@
 - Shared cross-feature code mirrors the same layout under `src/components/`, `src/hooks/`, `src/entities/`, `src/builders/`, `src/atoms/`, `src/utils/`.
 - Two-level component architecture: primitives in `src/components/ui/` (shadcn/ui, accessible, no business logic) and business components in a dedicated UI feature folder (e.g., `src/features/<UILibrary>/`). Business components consume primitives; primitives never consume business components.
 - Tests mirror source under `tests/behavior/features/<FeatureName>/<folderType>/<Name>.test.<ext>`. Not co-located.
-- Every folder with source files re-exports through an `index.ts`. Index files re-export only — no logic.
+- Every folder with source files re-exports through an `index.ts`. Index files re-export only - no logic.
 
 ## Imports and dependencies
 
